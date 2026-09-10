@@ -3,7 +3,9 @@ local Terminal = require("src.terminal")
 local Lazy = {}
 
 Lazy.plugins = {
-    { name = "lazy.nvim", tag = "v11.14.0", time = "0.8ms", status = "loaded", desc = "Modern plugin manager for Neovim/RVM" },
+    { name = "lazy.nvim", tag = "v11.14.0", time = "0.8ms", status = "loaded", desc = "Modern plugin manager for Neovim/RVM", url = "https://github.com/folke/lazy.nvim.git" },
+    { name = "LazyVim", tag = "v12.3.0", time = "1.1ms", status = "loaded", desc = "LazyVim core distribution spec & Neovim setup", url = "https://github.com/LazyVim/LazyVim.git" },
+    { name = "vim", tag = "v9.1.0", time = "0.5ms", status = "loaded", desc = "Vim core runtime & compatibility layer", url = "https://github.com/vim/vim.git" },
     { name = "telescope.nvim", tag = "v0.1.8", time = "2.4ms", status = "loaded", desc = "Fuzzy finder over lists, files, and text" },
     { name = "nvim-treesitter", tag = "v0.9.2", time = "3.1ms", status = "loaded", desc = "Nvim Treesitter configurations and abstraction layer" },
     { name = "catppuccin", tag = "v1.7.0", time = "1.2ms", status = "loaded", desc = "Soothing pastel theme for RVM" },

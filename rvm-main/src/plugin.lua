@@ -51,6 +51,18 @@ Plugin.builtin = {
         desc = "Git status indicators and branch tracking for RVM buffers",
         setup = function(app) end
     },
+    ["vim"] = {
+        name = "vim",
+        url = "https://github.com/vim/vim.git",
+        desc = "Vim core runtime & compatibility layer",
+        setup = function(app) end
+    },
+    ["LazyVim"] = {
+        name = "LazyVim",
+        url = "https://github.com/LazyVim/LazyVim.git",
+        desc = "LazyVim core distribution spec & Neovim setup",
+        setup = function(app) end
+    },
     ["rvm-treesitter"] = {
         name = "rvm-treesitter",
         desc = "Fast multi-language AST syntax highlighting and text objects",

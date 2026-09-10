@@ -471,16 +471,42 @@ function Keybindings.handle(key, app)
     return
   end
 
-  -- Universal control keys
+  -- Universal control keys & VS Code shortcuts
   if key == "ctrl_s" then
     Keybindings.actions.file_save(app)
     return
   elseif key == "ctrl_q" then
     app.should_quit = true
     return
-  elseif key == "ctrl_p" then
-    app.finder:open("commands")
-    app.finder.app_ref = app
+  elseif key == "ctrl_p" or key == "ctrl_shift_p" then
+    Keybindings.actions.finder_files(app)
+    return
+  elseif key == "ctrl_b" then
+    Keybindings.actions.explorer_toggle(app)
+    return
+  elseif key == "ctrl_shift_f" then
+    Keybindings.actions.finder_grep(app)
+    return
+  elseif key == "ctrl_w" then
+    Keybindings.actions.buffer_delete(app)
+    return
+  elseif key == "ctrl_n" then
+    Keybindings.actions.buffer_new(app)
+    return
+  elseif key == "ctrl_t" or key == "ctrl_backtick" then
+    Keybindings.actions.terminal_toggle(app)
+    return
+  elseif key == "ctrl_tab" then
+    Keybindings.actions.buffer_next(app)
+    return
+  elseif key == "ctrl_shift_tab" then
+    Keybindings.actions.buffer_prev(app)
+    return
+  elseif key == "ctrl_z" then
+    Keybindings.actions.edit_undo(app)
+    return
+  elseif key == "ctrl_y" or key == "ctrl_shift_z" then
+    Keybindings.actions.edit_redo(app)
     return
   elseif key == "ctrl_h" then Keybindings.actions.window_focus_left(app); return
   elseif key == "ctrl_j" then Keybindings.actions.window_focus_down(app); return

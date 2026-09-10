@@ -184,37 +184,64 @@ impl App {
             return;
         }
 
-        // Universal Ctrl-* shortcuts
+        // Universal Ctrl-* & VS Code shortcuts
         if key.modifiers.contains(KeyModifiers::CONTROL) {
             match key.code {
                 KeyCode::Char('s') => {
-                    let buf = &mut self.buffers[self.buf_index];
-                    if let Err(e) = buf.save() {
-                        self.status_msg = format!("Error saving: {}", e);
-                    } else {
-                        self.status_msg = "File saved successfully".to_string();
-                    }
+                    self.dispatch_action("file_save");
                     return;
                 }
                 KeyCode::Char('q') => {
                     self.should_quit = true;
                     return;
                 }
+                KeyCode::Char('p') => {
+                    self.dispatch_action("finder_files");
+                    return;
+                }
+                KeyCode::Char('b') => {
+                    self.dispatch_action("explorer_toggle");
+                    return;
+                }
                 KeyCode::Char('z') => {
-                    self.buffers[self.buf_index].undo();
+                    self.dispatch_action("edit_undo");
                     return;
                 }
                 KeyCode::Char('y') => {
-                    self.buffers[self.buf_index].redo();
+                    self.dispatch_action("edit_redo");
                     return;
                 }
                 KeyCode::Char('f') => {
-                    self.keymap.mode = VimMode::Search;
-                    self.search_input.clear();
+                    if key.modifiers.contains(KeyModifiers::SHIFT) {
+                        self.dispatch_action("finder_files");
+                    } else {
+                        self.keymap.mode = VimMode::Search;
+                        self.search_input.clear();
+                    }
                     return;
                 }
                 KeyCode::Char('e') => {
                     self.explorer.toggle_visibility();
+                    return;
+                }
+                KeyCode::Char('w') => {
+                    self.dispatch_action("buffer_delete");
+                    return;
+                }
+                KeyCode::Char('n') => {
+                    self.dispatch_action("buffer_new");
+                    return;
+                }
+                KeyCode::Char('t') => {
+                    self.dispatch_action("terminal_toggle");
+                    return;
+                }
+                KeyCode::Tab => {
+                    if key.modifiers.contains(KeyModifiers::SHIFT) {
+                        self.dispatch_action("buffer_prev");
+                    } else {
+                        self.dispatch_action("buffer_next");
+                    }
                     return;
                 }
                 _ => {}

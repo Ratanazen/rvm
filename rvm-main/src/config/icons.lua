@@ -75,22 +75,22 @@ Icons.map = {
     },
     dart = {
         image = "icons/dart.png",
-        fallback_glyph = "🎯",
+        fallback_glyph = "",
         fallback_color = {192, 132, 252}
     },
     rs = {
         image = "icons/rs.png",
-        fallback_glyph = "🦀",
+        fallback_glyph = "",
         fallback_color = {251, 146, 60}
     },
     rust = {
         image = "icons/rs.png",
-        fallback_glyph = "🦀",
+        fallback_glyph = "",
         fallback_color = {251, 146, 60}
     },
     go = {
         image = "icons/go.png",
-        fallback_glyph = "🐹",
+        fallback_glyph = "",
         fallback_color = {34, 211, 238}
     },
     json = {
@@ -110,22 +110,22 @@ Icons.map = {
     },
     lua = {
         image = "icons/lua.png",
-        fallback_glyph = "🌕",
+        fallback_glyph = "",
         fallback_color = {59, 130, 246}
     },
     yaml = {
         image = "icons/default_file.png",
-        fallback_glyph = "⚙",
+        fallback_glyph = "",
         fallback_color = {251, 191, 36}
     },
     yml = {
         image = "icons/default_file.png",
-        fallback_glyph = "⚙",
+        fallback_glyph = "",
         fallback_color = {251, 191, 36}
     },
     toml = {
         image = "icons/default_file.png",
-        fallback_glyph = "⚙",
+        fallback_glyph = "",
         fallback_color = {251, 191, 36}
     },
 
@@ -142,24 +142,24 @@ Icons.map = {
     },
     default_file = {
         image = "icons/default_file.png",
-        fallback_glyph = "📄",
+        fallback_glyph = "",
         fallback_color = {204, 204, 204}
     },
 
     -- Dashboard keys
     save = {
         image = "icons/save.png",
-        fallback_glyph = "💾",
+        fallback_glyph = "",
         fallback_color = {56, 189, 248}
     },
     explorer = {
         image = "icons/explorer.png",
-        fallback_glyph = "📂",
+        fallback_glyph = "",
         fallback_color = {251, 191, 36}
     },
     theme = {
         image = "icons/theme.png",
-        fallback_glyph = "🎨",
+        fallback_glyph = "",
         fallback_color = {192, 132, 252}
     },
 }

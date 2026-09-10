@@ -9,7 +9,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-echo "🚀 Installing RVM 2.0 — Native Terminal Code Editor (Vim + LazyVim UX)..."
+echo ":: Installing RVM 2.0 — Native Terminal Code Editor (Vim + LazyVim UX)..."
 
 # 1. Create target directories
 mkdir -p "$HOME/.local/bin"
@@ -35,16 +35,16 @@ fi
 
 # 5. Build the native Rust binary if cargo is available
 if command -v cargo >/dev/null 2>&1; then
-    echo "📦 Building native Rust binary..."
+    echo ":: Building native Rust binary..."
     cd "$SCRIPT_DIR"
     if cargo build --release 2>/dev/null; then
         cp target/release/rvm "$HOME/.local/bin/rvm-native" 2>/dev/null || true
         echo "  Native binary installed to $HOME/.local/bin/rvm-native"
     else
-        echo "  ⚠️  cargo build failed; continuing with Lua-only installation"
+        echo "  [WARN] cargo build failed; continuing with Lua-only installation"
     fi
 else
-    echo "  ℹ️  cargo not found; skipping native Rust binary (Lua implementation is sufficient)"
+    echo "  [INFO] cargo not found; skipping native Rust binary (Lua implementation is sufficient)"
 fi
 
 # 6. Create a default user config if missing
@@ -68,7 +68,7 @@ EOF
 fi
 
 echo ""
-echo "✅ RVM 2.0 has been installed successfully!"
+echo "[OK] RVM 2.0 has been installed successfully!"
 echo "   Executable path: $HOME/.local/bin/rvm"
 echo ""
 echo "Try running:"

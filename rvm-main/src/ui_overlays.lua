@@ -42,7 +42,7 @@ function UIOverlays.bufferline(app, cols, theme)
     local dirty = b.is_dirty and " ●" or ""
     local is_active = (i == app.buf_index) and not app.show_dashboard
     local icon_def = Icons.get({ name = name, is_dir = false })
-    local glyph = icon_def and (icon_def.fallback_glyph or "📄") or "📄"
+    local glyph = icon_def and (icon_def.fallback_glyph or "") or ""
     local ic_color = icon_def and icon_def.fallback_color or theme.foreground
 
     if is_active then
@@ -63,7 +63,7 @@ end
 
 -- ─────────────────────────────────────────────────────────
 -- Statusline
--- Format: NORMAL  main.dart  Dart  LSP ✓  Git:main  42:18
+-- Format: NORMAL  main.dart  Dart  LSP   Git:main  42:18
 -- ─────────────────────────────────────────────────────────
 function UIOverlays.statusline(app, cols, theme)
   local buf = app.buffer
@@ -80,7 +80,7 @@ function UIOverlays.statusline(app, cols, theme)
 
   -- LSP indicator
   local srv, _ = LSP.detect_server(buf)
-  local lsp_str = "  LSP " .. (srv and "✓" or "○")
+  local lsp_str = "  LSP " .. (srv and "OK" or "--")
 
   -- Diagnostics summary
   local diags = LSP.diagnostics(buf)
@@ -94,9 +94,9 @@ function UIOverlays.statusline(app, cols, theme)
       end
     end
     if errors > 0 then
-      diag_str = "  ⨉ " .. errors
+      diag_str = "  E:" .. errors
     elseif warns > 0 then
-      diag_str = "  ⚠ " .. warns
+      diag_str = "  W:" .. warns
     end
   end
 
@@ -316,7 +316,7 @@ end
 -- Project dashboard (modern LazyVim-style)
 -- ─────────────────────────────────────────────────────────
 function UIOverlays.dashboard(app, rows, cols, theme)
-  local proj = app.project or { name = "Workspace", icon = "📁", root = "." }
+  local proj = app.project or { name = "Workspace", icon = "󰉋", root = "." }
   local accent_c = theme.functions or {56, 189, 248}
   local muted_c  = theme.comments or {120, 120, 120}
   local text_c   = theme.foreground or {220, 220, 220}
@@ -343,7 +343,7 @@ function UIOverlays.dashboard(app, rows, cols, theme)
   -- Project info block
   local info_y = cy + #logo + 2
   Terminal.move_cursor(info_y, cx)
-  io.write(fg(muted_c[1], muted_c[2], muted_c[3]) .. "Project: " .. reset() .. fg(text_c[1], text_c[2], text_c[3]) .. bold() .. (proj.icon or "📁") .. " " .. (proj.name or "Workspace") .. reset())
+  io.write(fg(muted_c[1], muted_c[2], muted_c[3]) .. "Project: " .. reset() .. fg(text_c[1], text_c[2], text_c[3]) .. bold() .. (proj.icon or "󰉋") .. " " .. (proj.name or "Workspace") .. reset())
 
   Terminal.move_cursor(info_y + 1, cx)
   io.write(fg(muted_c[1], muted_c[2], muted_c[3]) .. "Root:   " .. reset() .. (proj.root or "."))

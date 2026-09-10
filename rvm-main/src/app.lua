@@ -92,7 +92,7 @@ function App.new(target_path)
     self.custom_keymaps = {}
 
     -- 9. Status message
-    self.status_msg = string.format("⚡ RVM — %s detected | %s active | Space: leader", self.project.name, self.style.name)
+    self.status_msg = string.format("RVM — %s detected | %s active | Space: leader", self.project.name, self.style.name)
     self.should_quit = false
 
     -- 10. Handle target argument

@@ -78,11 +78,11 @@ local function get_file_icon(entry, theme)
     end
 
     if not icon_def then
-        return Terminal.fg_rgb(theme.foreground[1], theme.foreground[2], theme.foreground[3]) .. "📄 ", nil
+        return Terminal.fg_rgb(theme.foreground[1], theme.foreground[2], theme.foreground[3]) .. " ", nil
     end
 
     local c = icon_def.fallback_color or theme.foreground
-    local g = icon_def.fallback_glyph or "📄"
+    local g = icon_def.fallback_glyph or ""
     local badge = string.format("%-2s ", g)
     return Terminal.fg_rgb(c[1], c[2], c[3]) .. badge .. Terminal.reset_color(), nil
 end
@@ -129,7 +129,7 @@ function UI.render(app)
 
         local tab_parts = {}
         if app.show_dashboard then
-            table.insert(tab_parts, string.format("%s%s ⚡ Welcome ✕ %s%s", s_bg, s_fg, h_bg, h_fg))
+            table.insert(tab_parts, string.format("%s%s  Welcome ✕ %s%s", s_bg, s_fg, h_bg, h_fg))
         end
         for i, b in ipairs(app.buffers) do
             local name = b.file_path and b.file_path:match("([^/\\]+)$") or (app.show_dashboard and "" or "Untitled")
@@ -176,7 +176,7 @@ function UI.render(app)
     -- 3A. VS Code Activity Bar (Far-Left Icon Strip)
     -- ────────────────────────────────────────────────────────
     if actbar_width > 0 then
-        local act_icons = { " 📁", " 🔍", " ", " ▷ ", " ⊞ " }
+        local act_icons = { " ", " ", " ", " ▷ ", " ⊞ " }
         local act_bg = Terminal.bg_rgb(math.max(0, theme.background[1] - 8), math.max(0, theme.background[2] - 8), math.max(0, theme.background[3] - 8))
         for r = 1, body_rows do
             Terminal.move_cursor(r + header_rows, 1)
@@ -188,9 +188,9 @@ function UI.render(app)
                     icon_str = mut_fg .. act_icons[r] .. reset .. act_bg
                 end
             elseif r == body_rows - 1 then
-                icon_str = mut_fg .. " 👤" .. reset .. act_bg
+                icon_str = mut_fg .. " " .. reset .. act_bg
             elseif r == body_rows then
-                icon_str = mut_fg .. " ⚙ " .. reset .. act_bg
+                icon_str = mut_fg .. "  " .. reset .. act_bg
             end
             io.write(act_bg .. icon_str .. b_fg .. "│" .. reset)
         end
@@ -288,13 +288,13 @@ function UI.render(app)
 
         local git_branch_str = ""
         if app.project and app.project.git_branch then
-            git_branch_str = "  " .. app.project.git_branch .. "* 🔄 "
+            git_branch_str = "  " .. app.project.git_branch .. "*  "
         else
-            git_branch_str = "  main* 🔄 "
+            git_branch_str = "  main*  "
         end
 
         local status_str = string.format(
-            "%s%s%s ⓧ 0  ⚠ 0 │ %s %s │ Ln %d, Col %d │ Spaces: 4 │ UTF-8 │ LF │ { } %s │ 🔔",
+            "%s%s%s ⓧ 0   0 │ %s %s │ Ln %d, Col %d │ Spaces: 4 │ UTF-8 │ LF │ { } %s │ ",
             mode_badge,
             s_bg .. s_fg,
             git_branch_str,
@@ -485,22 +485,22 @@ function UI.render_dashboard(body_rows, editor_cols, start_col, theme, header_ro
 
     local left_lines = {
         { type = "hdr", text = "Start" },
-        { type = "item", icon = "📄", img = "icons/default_file.png", label = "New File...", key = "Ctrl+N" },
-        { type = "item", icon = "📁", img = "icons/folder_closed.png", label = "Open File...", key = "Ctrl+O" },
-        { type = "item", icon = "📂", img = "icons/explorer.png", label = "Open Folder...", key = "rvm <path>" },
-        { type = "item", icon = "🔗", img = "icons/save.png", label = "Clone Git Repo...", key = "git clone" },
+        { type = "item", icon = "", img = "icons/default_file.png", label = "New File...", key = "Ctrl+N" },
+        { type = "item", icon = "", img = "icons/folder_closed.png", label = "Open File...", key = "Ctrl+O" },
+        { type = "item", icon = "", img = "icons/explorer.png", label = "Open Folder...", key = "rvm <path>" },
+        { type = "item", icon = "", img = "icons/save.png", label = "Clone Git Repo...", key = "git clone" },
         { type = "blank" },
         { type = "hdr", text = "Recent" },
-        { type = "rec", icon = "⚡", img = "icons/theme.png", name = proj_name, path = "~/Projects/" .. proj_name },
-        { type = "rec", icon = "📁", img = "icons/folder_closed.png", name = "backend-api", path = "~/Documents/API" },
-        { type = "rec", icon = "🐍", img = "icons/py.png", name = "python-script", path = "~/Desktop" },
+        { type = "rec", icon = "", img = "icons/theme.png", name = proj_name, path = "~/Projects/" .. proj_name },
+        { type = "rec", icon = "", img = "icons/folder_closed.png", name = "backend-api", path = "~/Documents/API" },
+        { type = "rec", icon = "", img = "icons/py.png", name = "python-script", path = "~/Desktop" },
         { type = "more", text = "more..." },
     }
 
     local right_cards = {
-        { title = "⚡ Get Started with RVM", desc = "Get started tutorials to Get Started with RVM." },
-        { title = "🎓 Learn the Basics", desc = "Learn how to start and master keybindings." },
-        { title = "🐍 Setup for Python / Web", desc = "LSP, syntax highlighting, and auto diagnostics." },
+        { title = " Get Started with RVM", desc = "Get started tutorials to Get Started with RVM." },
+        { title = " Learn the Basics", desc = "Learn how to start and master keybindings." },
+        { title = " Setup for Python / Web", desc = "LSP, syntax highlighting, and auto diagnostics." },
     }
 
     local right_lines = {
@@ -513,9 +513,9 @@ function UI.render_dashboard(body_rows, editor_cols, start_col, theme, header_ro
     end
     table.insert(right_lines, { type = "blank" })
     table.insert(right_lines, { type = "hdr", text = "Customize" })
-    table.insert(right_lines, { type = "item", icon = "🎨", img = "icons/theme.png", label = "Color Theme", key = "Space+t" })
-    table.insert(right_lines, { type = "item", icon = "📐", img = "icons/explorer.png", label = "Editor Style", key = "Space+s" })
-    table.insert(right_lines, { type = "item", icon = "⌨ ", img = "icons/default_file.png", label = "Shortcuts", key = "Space" })
+    table.insert(right_lines, { type = "item", icon = "", img = "icons/theme.png", label = "Color Theme", key = "Space+t" })
+    table.insert(right_lines, { type = "item", icon = "", img = "icons/explorer.png", label = "Editor Style", key = "Space+s" })
+    table.insert(right_lines, { type = "item", icon = " ", img = "icons/default_file.png", label = "Shortcuts", key = "Space" })
     table.insert(right_lines, { type = "blank" })
     table.insert(right_lines, { type = "hdr", text = "Help" })
     table.insert(right_lines, { type = "help", text = "Documentation │ Release Notes │ Community" })
@@ -528,7 +528,7 @@ function UI.render_dashboard(body_rows, editor_cols, start_col, theme, header_ro
         local cur_row = r + header_rows
 
         if r == 1 then
-            line_str = " " .. accent .. Terminal.bold() .. "⚡ Welcome" .. reset .. e_bg .. mut_fg .. " - " .. proj_name
+            line_str = " " .. accent .. Terminal.bold() .. " Welcome" .. reset .. e_bg .. mut_fg .. " - " .. proj_name
         elseif r == body_rows and body_rows >= 8 then
             -- Integrated Terminal Panel Tab Bar at bottom
             line_str = string.format(

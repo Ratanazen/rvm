@@ -16,14 +16,19 @@ vim.api.nvim_create_autocmd("VimResized", {
   end,
 })
 
--- Terminal Buffer Options (no line numbers, no relative numbers, no signcolumn)
-vim.api.nvim_create_autocmd("TermOpen", {
+-- Terminal Buffer Options (no line numbers, no relative numbers, no signcolumn, no winbar)
+vim.api.nvim_create_autocmd({ "TermOpen", "FileType" }, {
   group = augroup("terminal_open"),
+  pattern = { "*", "terminal", "toggleterm", "snacks_terminal" },
   callback = function(event)
-    vim.opt_local.number = false
-    vim.opt_local.relativenumber = false
-    vim.opt_local.signcolumn = "no"
-    vim.opt_local.scrolloff = 0
+    if vim.bo[event.buf].buftype == "terminal" or vim.bo[event.buf].filetype == "terminal" then
+      vim.opt_local.number = false
+      vim.opt_local.relativenumber = false
+      vim.opt_local.signcolumn = "no"
+      vim.opt_local.scrolloff = 0
+      vim.wo.winbar = ""
+      vim.wo.statusline = " "
+    end
   end,
 })
 

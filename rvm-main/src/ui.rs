@@ -89,7 +89,7 @@ impl<'a> UI<'a> {
                 .iter()
                 .enumerate()
                 .map(|(idx, entry)| {
-                    let prefix = if entry.is_dir { "📁 " } else { "📄 " };
+                    let prefix = if entry.is_dir { "󰉋 " } else { "󰈔 " };
                     let style = if idx == explorer.selected_index {
                         Style::default()
                             .bg(colors.selection)
@@ -214,7 +214,7 @@ impl<'a> UI<'a> {
         }
         lines.push(Line::from(""));
         lines.push(Line::from(Span::styled(
-            "    ⚡ RVM 2.0 — Vim + LazyVim UX, native terminal editor",
+            "    RVM 2.0 — Vim + LazyVim UX, native terminal editor",
             Style::default().fg(Color::Indexed(170)),
         )));
 

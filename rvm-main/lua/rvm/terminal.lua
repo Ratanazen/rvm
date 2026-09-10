@@ -49,6 +49,10 @@ function M.open_root()
         width = size.width,
         height = size.height,
         border = "single",
+        title = false,
+        wo = {
+          winbar = "",
+        },
       },
     })
   else
@@ -69,6 +73,10 @@ function M.open_cwd()
         width = size.width,
         height = size.height,
         border = "single",
+        title = false,
+        wo = {
+          winbar = "",
+        },
       },
     })
   else

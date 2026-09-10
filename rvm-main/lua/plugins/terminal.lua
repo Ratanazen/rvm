@@ -13,6 +13,10 @@ return {
         win = {
           style = "terminal",
           border = "single",
+          title = false,
+          wo = {
+            winbar = "",
+          },
         },
       },
     },

@@ -7,7 +7,7 @@ local Languages = {
         formatter = "prettier",
         indentation = 2,
         extensions = { "html", "htm" },
-        icon = "🌐",
+        icon = "",
         theme = "RVM Ocean",
     },
     css = {
@@ -17,7 +17,7 @@ local Languages = {
         formatter = "prettier",
         indentation = 2,
         extensions = { "css" },
-        icon = "🎨",
+        icon = "",
     },
     scss = {
         name = "SCSS",
@@ -26,7 +26,7 @@ local Languages = {
         formatter = "prettier",
         indentation = 2,
         extensions = { "scss", "sass" },
-        icon = "💅",
+        icon = "",
     },
     javascript = {
         name = "JavaScript",
@@ -35,7 +35,7 @@ local Languages = {
         formatter = "prettier",
         indentation = 2,
         extensions = { "js", "mjs", "cjs" },
-        icon = "📜",
+        icon = "",
     },
     typescript = {
         name = "TypeScript",
@@ -44,7 +44,7 @@ local Languages = {
         formatter = "prettier",
         indentation = 2,
         extensions = { "ts", "mts", "cts" },
-        icon = "🔷",
+        icon = "",
     },
     jsx = {
         name = "JSX",
@@ -53,7 +53,7 @@ local Languages = {
         formatter = "prettier",
         indentation = 2,
         extensions = { "jsx" },
-        icon = "⚛️",
+        icon = "",
     },
     tsx = {
         name = "TSX",
@@ -62,7 +62,7 @@ local Languages = {
         formatter = "prettier",
         indentation = 2,
         extensions = { "tsx" },
-        icon = "⚛️",
+        icon = "",
     },
 
     -- Frontend Frameworks
@@ -73,7 +73,7 @@ local Languages = {
         formatter = "prettier",
         indentation = 2,
         extensions = { "jsx", "tsx" },
-        icon = "⚛️",
+        icon = "",
     },
     vue = {
         name = "Vue",
@@ -82,7 +82,7 @@ local Languages = {
         formatter = "prettier",
         indentation = 2,
         extensions = { "vue" },
-        icon = "💚",
+        icon = "",
     },
     svelte = {
         name = "Svelte",
@@ -91,7 +91,7 @@ local Languages = {
         formatter = "prettier",
         indentation = 2,
         extensions = { "svelte" },
-        icon = "🧡",
+        icon = "",
     },
 
     -- Mobile
@@ -102,7 +102,7 @@ local Languages = {
         formatter = "dart_format",
         indentation = 2,
         extensions = { "dart" },
-        icon = "🎯",
+        icon = "",
         theme = "RVM Purple",
     },
     flutter = {
@@ -112,7 +112,7 @@ local Languages = {
         formatter = "dart_format",
         indentation = 2,
         extensions = { "dart" },
-        icon = "💙",
+        icon = "",
     },
 
     -- Backend
@@ -123,7 +123,7 @@ local Languages = {
         formatter = "black",
         indentation = 4,
         extensions = { "py", "pyw", "pyi" },
-        icon = "🐍",
+        icon = "",
         theme = "RVM Forest",
     },
     lua = {
@@ -133,7 +133,7 @@ local Languages = {
         formatter = "stylua",
         indentation = 4,
         extensions = { "lua" },
-        icon = "🌙",
+        icon = "",
     },
     go = {
         name = "Go",
@@ -142,7 +142,7 @@ local Languages = {
         formatter = "gofmt",
         indentation = 4,
         extensions = { "go" },
-        icon = "🐹",
+        icon = "",
     },
     rust = {
         name = "Rust",
@@ -151,7 +151,7 @@ local Languages = {
         formatter = "rustfmt",
         indentation = 4,
         extensions = { "rs" },
-        icon = "🦀",
+        icon = "",
         theme = "RVM Midnight",
     },
     java = {
@@ -161,7 +161,7 @@ local Languages = {
         formatter = "google-java-format",
         indentation = 4,
         extensions = { "java" },
-        icon = "☕",
+        icon = "",
     },
     php = {
         name = "PHP",
@@ -170,7 +170,7 @@ local Languages = {
         formatter = "php-cs-fixer",
         indentation = 4,
         extensions = { "php" },
-        icon = "🐘",
+        icon = "",
     },
     c = {
         name = "C",
@@ -179,7 +179,7 @@ local Languages = {
         formatter = "clang-format",
         indentation = 4,
         extensions = { "c", "h" },
-        icon = "🅒",
+        icon = "",
     },
     cpp = {
         name = "C++",
@@ -188,7 +188,7 @@ local Languages = {
         formatter = "clang-format",
         indentation = 4,
         extensions = { "cpp", "cc", "cxx", "hpp", "hh", "hxx" },
-        icon = "➕",
+        icon = "",
     },
     csharp = {
         name = "C#",
@@ -206,7 +206,7 @@ local Languages = {
         formatter = "rubocop",
         indentation = 2,
         extensions = { "rb", "rake" },
-        icon = "💎",
+        icon = "",
     },
 
     -- Data & Config
@@ -217,7 +217,7 @@ local Languages = {
         formatter = "prettier",
         indentation = 2,
         extensions = { "json" },
-        icon = "📋",
+        icon = "",
     },
     yaml = {
         name = "YAML",
@@ -226,7 +226,7 @@ local Languages = {
         formatter = "prettier",
         indentation = 2,
         extensions = { "yaml", "yml" },
-        icon = "⚙️",
+        icon = "️",
     },
     toml = {
         name = "TOML",
@@ -235,7 +235,7 @@ local Languages = {
         formatter = "taplo",
         indentation = 2,
         extensions = { "toml" },
-        icon = "📦",
+        icon = "",
     },
     xml = {
         name = "XML",
@@ -244,7 +244,7 @@ local Languages = {
         formatter = "prettier",
         indentation = 2,
         extensions = { "xml", "svg" },
-        icon = "📑",
+        icon = "",
     },
     csv = {
         name = "CSV",
@@ -253,7 +253,7 @@ local Languages = {
         formatter = nil,
         indentation = 2,
         extensions = { "csv", "tsv" },
-        icon = "📊",
+        icon = "",
     },
 
     -- Database
@@ -264,7 +264,7 @@ local Languages = {
         formatter = "sql-formatter",
         indentation = 4,
         extensions = { "sql" },
-        icon = "🗄️",
+        icon = "️",
     },
 
     -- Shell
@@ -275,7 +275,7 @@ local Languages = {
         formatter = "shfmt",
         indentation = 4,
         extensions = { "sh", "bash", "zsh" },
-        icon = "🐚",
+        icon = "",
     },
     powershell = {
         name = "PowerShell",
@@ -284,7 +284,7 @@ local Languages = {
         formatter = "powershell",
         indentation = 4,
         extensions = { "ps1", "psm1" },
-        icon = "⚡",
+        icon = "",
     },
 
     -- Documentation
@@ -295,7 +295,7 @@ local Languages = {
         formatter = "prettier",
         indentation = 2,
         extensions = { "md", "markdown" },
-        icon = "📝",
+        icon = "",
     },
 }
 
@@ -322,7 +322,7 @@ function Languages.detect(file_path)
     if fname == "pubspec.yaml" then return Languages.yaml, "yaml" end
     if fname == "cargo.toml" then return Languages.toml, "toml" end
 
-    return { name = "Plain Text", syntax = false, indentation = 4, icon = "📄" }, "plaintext"
+    return { name = "Plain Text", syntax = false, indentation = 4, icon = "" }, "plaintext"
 end
 
 return Languages

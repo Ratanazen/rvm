@@ -27,7 +27,7 @@ local function detect_raw(dir)
             return {
                 id = "flutter",
                 name = "Flutter Project",
-                icon = "💙",
+                icon = "󰢗",
                 lang = "dart",
                 lsp = "dart",
                 formatter = "dart_format",
@@ -39,7 +39,7 @@ local function detect_raw(dir)
             return {
                 id = "dart",
                 name = "Dart Project",
-                icon = "🎯",
+                icon = "󰢗",
                 lang = "dart",
                 lsp = "dart",
                 formatter = "dart_format",
@@ -57,7 +57,7 @@ local function detect_raw(dir)
             return {
                 id = "react",
                 name = "React Project",
-                icon = "⚛️",
+                icon = "󰡨",
                 lang = "typescript",
                 lsp = "typescript-language-server",
                 formatter = "prettier",
@@ -69,7 +69,7 @@ local function detect_raw(dir)
             return {
                 id = "vue",
                 name = "Vue Project",
-                icon = "💚",
+                icon = "󰡨",
                 lang = "vue",
                 lsp = "volar",
                 formatter = "prettier",
@@ -81,7 +81,7 @@ local function detect_raw(dir)
             return {
                 id = "svelte",
                 name = "Svelte Project",
-                icon = "🧡",
+                icon = "󰡨",
                 lang = "svelte",
                 lsp = "svelte-language-server",
                 formatter = "prettier",
@@ -93,7 +93,7 @@ local function detect_raw(dir)
             return {
                 id = "nodejs",
                 name = "Node.js Project",
-                icon = "📦",
+                icon = "󰏖",
                 lang = "javascript",
                 lsp = "typescript-language-server",
                 formatter = "prettier",
@@ -109,7 +109,7 @@ local function detect_raw(dir)
         return {
             id = "rust",
             name = "Rust Project",
-            icon = "🦀",
+            icon = "󱘗",
             lang = "rust",
             lsp = "rust-analyzer",
             formatter = "rustfmt",
@@ -124,7 +124,7 @@ local function detect_raw(dir)
         return {
             id = "go",
             name = "Go Project",
-            icon = "🐹",
+            icon = "󰟓",
             lang = "go",
             lsp = "gopls",
             formatter = "gofmt",
@@ -139,7 +139,7 @@ local function detect_raw(dir)
         return {
             id = "python",
             name = "Python Project",
-            icon = "🐍",
+            icon = "󰌠",
             lang = "python",
             lsp = "pyright",
             formatter = "black",
@@ -154,7 +154,7 @@ local function detect_raw(dir)
         return {
             id = "java",
             name = "Java Project",
-            icon = "☕",
+            icon = "󰬷",
             lang = "java",
             lsp = "jdtls",
             formatter = "google-java-format",
@@ -170,7 +170,7 @@ local function detect_raw(dir)
         return {
             id = is_cpp and "cpp" or "c",
             name = is_cpp and "C++ Project" or "C Project",
-            icon = is_cpp and "➕" or "🅒",
+            icon = "󰙲",
             lang = is_cpp and "cpp" or "c",
             lsp = "clangd",
             formatter = "clang-format",
@@ -185,7 +185,7 @@ local function detect_raw(dir)
         return {
             id = "php",
             name = "PHP Project",
-            icon = "🐘",
+            icon = "󰌟",
             lang = "php",
             lsp = "intelephense",
             formatter = "php-cs-fixer",
@@ -200,7 +200,7 @@ local function detect_raw(dir)
         return {
             id = "ruby",
             name = "Ruby Project",
-            icon = "💎",
+            icon = "󰴭",
             lang = "ruby",
             lsp = "solargraph",
             formatter = "rubocop",
@@ -215,7 +215,7 @@ local function detect_raw(dir)
         return {
             id = "html",
             name = "Web HTML/CSS Project",
-            icon = "🌐",
+            icon = "󰖟",
             lang = "html",
             lsp = "html-language-server",
             formatter = "prettier",
@@ -229,7 +229,7 @@ local function detect_raw(dir)
     return {
         id = "general",
         name = "Workspace Directory",
-        icon = "📁",
+        icon = "󰉋",
         lang = "plaintext",
         lsp = nil,
         formatter = nil,

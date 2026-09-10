@@ -109,16 +109,16 @@ impl WhichKey {
         if self.prefix.is_empty() {
             // Top-level groups
             let groups = [
-                ('f', "Find",       "🔍", "Telescope-like finders"),
-                ('g', "Git",         "🌿", "Git workflow"),
-                ('b', "Buffers",     "📑", "Buffer operations"),
-                ('p', "Projects",    "📂", "Project management"),
-                ('l', "LSP",         "💡", "Language server"),
-                ('x', "Diagnostics", "⚠️", "Diagnostics panel"),
-                ('t', "Terminal",    "💻", "Terminal panel"),
-                ('e', "Explorer",    "📁", "Toggle file explorer"),
-                ('w', "Window",      "🪟", "Window management"),
-                ('s', "Search",      "🔎", "Buffer search"),
+                ('f', "Find",       "󰍉", "Telescope-like finders"),
+                ('g', "Git",         "󰊢", "Git workflow"),
+                ('b', "Buffers",     "󰓩", "Buffer operations"),
+                ('p', "Projects",    "󰉋", "Project management"),
+                ('l', "LSP",         "󰌵", "Language server"),
+                ('x', "Diagnostics", "󰅙", "Diagnostics panel"),
+                ('t', "Terminal",    "󰆍", "Terminal panel"),
+                ('e', "Explorer",    "󰉋", "Toggle file explorer"),
+                ('w', "Window",      "󰖲", "Window management"),
+                ('s', "Search",      "󰍉", "Buffer search"),
             ];
             for (k, label, icon, desc) in groups {
                 rows.push(WhichKeyEntry {

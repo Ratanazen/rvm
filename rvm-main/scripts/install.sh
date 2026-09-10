@@ -11,7 +11,7 @@ COLOR_YELLOW="\033[1;33m"
 COLOR_RED="\033[1;31m"
 COLOR_RESET="\033[0m"
 
-echo -e "${COLOR_CYAN}⚡ RVM — Ratana Vim Neovim Distribution Installer${COLOR_RESET}"
+echo -e "${COLOR_CYAN}RVM — Ratana Vim Neovim Distribution Installer${COLOR_RESET}"
 echo "--------------------------------------------------------"
 
 # 1. Check Neovim version

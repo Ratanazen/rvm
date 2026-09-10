@@ -33,7 +33,7 @@ function Lazy.render(rows, cols, theme)
 
     -- Title box
     Terminal.move_cursor(1, 1)
-    local title = " 💤 lazy.nvim — RVM Plugin Manager (" .. #Lazy.plugins .. " plugins loaded in 12.4ms) "
+    local title = " lazy.nvim — RVM Plugin Manager (" .. #Lazy.plugins .. " plugins loaded in 12.4ms) "
     title = title .. string.rep(" ", math.max(0, cols - #title))
     io.write(h_bg .. accent .. Terminal.bold() .. title:sub(1, cols) .. Terminal.reset_color())
 

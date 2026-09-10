@@ -32,16 +32,21 @@ return {
     end,
   },
 
-  -- Clean Bufferline
+  -- Clean Bufferline (Flat Thin Tabs)
   {
     "akinsho/bufferline.nvim",
     event = "VeryLazy",
     opts = {
       options = {
+        mode = "buffers",
+        style = "thin",
+        separator_style = "thin",
         diagnostics = "nvim_lsp",
-        always_show_bufferline = false,
+        always_show_bufferline = true,
         show_buffer_close_icons = false,
         show_close_icon = false,
+        enforce_regular_tabs = true,
+        modified_icon = "[+]",
       },
     },
   },

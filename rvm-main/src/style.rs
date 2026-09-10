@@ -141,7 +141,7 @@ impl Style {
                 statusline: true,
                 tabline: true,
                 borders: true,
-                border_style: BorderStyle::Rounded,
+                border_style: BorderStyle::Single,
                 line_numbers: true,
                 header: true,
                 padding: 1,

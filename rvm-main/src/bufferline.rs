@@ -1,7 +1,7 @@
 // src/bufferline.rs — Modern bufferline + statusline renderer for the Rust binary.
 //
 // Per spec requirement #17, statusline shows:
-//   NORMAL  main.dart  Dart  LSP ✓  Git:main  42:18
+//   NORMAL  main.dart  Dart  LSP   Git:main  42:18
 //
 // Per spec requirement #10, bufferline shows multiple buffers with
 // modified indicators, next/previous buffer, close buffer.
@@ -118,7 +118,7 @@ pub fn render_statusline(
     ));
 
     // LSP indicator
-    let lsp_str = if lsp_ok { "LSP ✓" } else { "LSP ○" };
+    let lsp_str = if lsp_ok { "LSP OK" } else { "LSP --" };
     spans.push(Span::styled(
         format!("{}  ", lsp_str),
         Style::default()

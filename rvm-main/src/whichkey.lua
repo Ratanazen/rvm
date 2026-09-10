@@ -13,19 +13,19 @@ WhichKey.__index = WhichKey
 -- Each group has: label, icon, entries = { [chord] = { label = ..., action = ... } }
 -- ─────────────────────────────────────────────────────────
 WhichKey.groups = {
-  f = { label = "Find",   icon = "🔍", desc = "Telescope-like finders" },
-  g = { label = "Git",    icon = "🌿", desc = "Git workflow" },
-  b = { label = "Buffers", icon = "📑", desc = "Buffer operations" },
-  p = { label = "Projects", icon = "📂", desc = "Project management" },
-  l = { label = "LSP",    icon = "💡", desc = "Language server" },
-  x = { label = "Diagnostics", icon = "⚠️", desc = "Diagnostics panel" },
-  t = { label = "Terminal", icon = "💻", desc = "Terminal panel" },
-  e = { label = "Explorer", icon = "📁", desc = "Toggle file explorer" },
-  w = { label = "Window",  icon = "🪟", desc = "Window management" },
-  s = { label = "Search",  icon = "🔎", desc = "Buffer search" },
-  q = { label = "Quit",    icon = "🚪", desc = "Quit / session" },
-  h = { label = "Help",    icon = "❓", desc = "Help" },
-  d = { label = "Debug",   icon = "🐞", desc = "Debug" },
+  f = { label = "Find",   icon = "󰍉", desc = "Telescope-like finders" },
+  g = { label = "Git",    icon = "󰊢", desc = "Git workflow" },
+  b = { label = "Buffers", icon = "󰓩", desc = "Buffer operations" },
+  p = { label = "Projects", icon = "󰉋", desc = "Project management" },
+  l = { label = "LSP",    icon = "󰌵", desc = "Language server" },
+  x = { label = "Diagnostics", icon = "󰅙", desc = "Diagnostics panel" },
+  t = { label = "Terminal", icon = "󰆍", desc = "Terminal panel" },
+  e = { label = "Explorer", icon = "󰉋", desc = "Toggle file explorer" },
+  w = { label = "Window",  icon = "󰖲", desc = "Window management" },
+  s = { label = "Search",  icon = "󰍉", desc = "Buffer search" },
+  q = { label = "Quit",    icon = "󰗼", desc = "Quit / session" },
+  h = { label = "Help",    icon = "󰋽", desc = "Help" },
+  d = { label = "Debug",   icon = "󰃤", desc = "Debug" },
 }
 
 -- ─────────────────────────────────────────────────────────
@@ -213,7 +213,7 @@ function WhichKey:hint_rows()
     -- Single-key shortcuts
     for k, e in pairs(WhichKey.chords) do
       if e.single then
-        table.insert(rows, { key = k, label = e.label, icon = "⚡", desc = "" })
+        table.insert(rows, { key = k, label = e.label, icon = "*", desc = "" })
       end
     end
     -- Sort: groups first (alphabetical), then singles (alphabetical)

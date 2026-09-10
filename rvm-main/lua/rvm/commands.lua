@@ -5,6 +5,7 @@ local lang = require("rvm.language")
 local config = require("rvm.config")
 local health = require("rvm.health")
 local ui = require("rvm.ui")
+local term = require("rvm.terminal")
 
 local M = {}
 
@@ -50,6 +51,16 @@ function M.setup()
   vim.api.nvim_create_user_command("RVMDiagnostics", function()
     vim.cmd("TroubleToggle diagnostics")
   end, { desc = "Toggle RVM diagnostics panel" })
+
+  -- RVM Terminal Commands
+  vim.api.nvim_create_user_command("RVMTerminal", term.open_root, { desc = "Toggle RVM terminal" })
+  vim.api.nvim_create_user_command("RVMTerminalRoot", term.open_root, { desc = "Open RVM terminal at root" })
+  vim.api.nvim_create_user_command("RVMTerminalCwd", term.open_cwd, { desc = "Open RVM terminal at CWD" })
+  vim.api.nvim_create_user_command("RVMTerminalResize", term.resize, { desc = "Resize RVM terminal window" })
+  vim.api.nvim_create_user_command("RVMTerminalList", term.list, { desc = "List active RVM terminals" })
+  vim.api.nvim_create_user_command("RVMTerminalShell", function()
+    vim.notify("Active Shell: " .. term.shell(), vim.log.levels.INFO, { title = "RVM Terminal Shell" })
+  end, { desc = "Show RVM active shell" })
 end
 
 return M

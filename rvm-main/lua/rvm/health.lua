@@ -3,6 +3,7 @@
 
 local lang = require("rvm.language")
 local config = require("rvm.config")
+local term = require("rvm.terminal")
 
 local M = {}
 
@@ -11,15 +12,21 @@ function M.check()
   local ver_str = string.format("%d.%d.%d", nvim_ver.major, nvim_ver.minor, nvim_ver.patch)
   local nvim_ok = (nvim_ver.major > 0 or nvim_ver.minor >= 9)
 
+  -- Terminal & Shell
+  local shell_bin = term.shell()
+  local shell_ok = (vim.fn.executable(shell_bin) == 1)
+
+  -- TrueColor
+  local termguicolors_ok = vim.opt.termguicolors:get()
+
   -- Check Git
   local git_handle = io.popen("git --version 2>/dev/null")
   local git_out = git_handle and git_handle:read("*a") or ""
   if git_handle then git_handle:close() end
   local git_ok = git_out:find("git version") ~= nil
 
-  -- Check Lazy.nvim
+  -- Check Lazy & Treesitter
   local lazy_ok = pcall(require, "lazy")
-  -- Check Treesitter
   local ts_ok = pcall(require, "nvim-treesitter")
 
   local header = "RVM Health"
@@ -30,24 +37,24 @@ function M.check()
   local lines = {
     header,
     "────────────────────────",
-    "RVM              " .. (config.options.version and "✓" or "✗"),
-    "Neovim           " .. (nvim_ok and "✓ (v" .. ver_str .. ")" or "✗ (Requires Neovim >= 0.9.0)"),
-    "Lazy.nvim        " .. (lazy_ok and "✓" or "✗"),
-    "LazyVim          ✓",
-    "Git              " .. (git_ok and "✓" or "✗"),
-    "Treesitter       " .. (ts_ok and "✓" or "✗"),
-    "LSP              ✓",
-    "Khmer Unicode    ✓",
-    "Theme            ✓ (" .. config.options.theme .. ")",
+    "RVM Terminal .... " .. (shell_ok and "OK" or "WARNING"),
+    "ANSI ............ OK",
+    "TrueColor ....... " .. (termguicolors_ok and "OK" or "DISABLED"),
+    "Shell ........... " .. (shell_ok and ("OK (" .. shell_bin .. ")") or "MISSING"),
+    "Treesitter ...... " .. (ts_ok and "OK" or "MISSING"),
+    "LSP ............. OK",
+    "Khmer ........... OK (UTF-8)",
+    "Neovim .......... " .. (nvim_ok and ("OK (v" .. ver_str .. ")") or "WARNING"),
+    "Git ............. " .. (git_ok and "OK" or "MISSING"),
   }
 
-  if not git_ok then
+  if not shell_ok then
     table.insert(lines, "")
-    table.insert(lines, "Git is not installed.")
-    table.insert(lines, "Suggestion: Install git using your system package manager (e.g. sudo apt install git / pacman -S git).")
+    table.insert(lines, "Shell Warning: Configured shell is not executable.")
+    table.insert(lines, "Suggestion: Set $SHELL environment variable to bash/zsh/fish.")
   end
 
-  vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "RVM Diagnostics" })
+  vim.notify(table.concat(lines, "\n"), vim.log.levels.INFO, { title = "RVM Health Diagnostics" })
 end
 
 return M

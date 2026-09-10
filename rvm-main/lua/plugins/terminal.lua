@@ -1,20 +1,41 @@
 -- lua/plugins/terminal.lua
--- RVM Floating Terminal (<leader>ft) matching user shell
+-- RVM Responsive Terminal Integration using Snacks.nvim
+
+local rvm_term = require("rvm.terminal")
 
 return {
   {
-    "akinsho/toggleterm.nvim",
-    cmd = { "ToggleTerm" },
-    keys = {
-      { "<leader>ft", "<cmd>ToggleTerm direction=float<cr>", desc = "Floating Terminal (<leader>ft)" },
-    },
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
     opts = {
-      size = 15,
-      open_mapping = [[<c-\>]],
-      direction = "float",
-      shell = os.getenv("SHELL") or vim.o.shell,
-      float_opts = {
-        border = "single",
+      terminal = {
+        win = {
+          style = "terminal",
+          border = "single",
+        },
+      },
+    },
+    keys = {
+      {
+        "<leader>ft",
+        function() rvm_term.open_root() end,
+        desc = "Terminal (Project Root)",
+      },
+      {
+        "<leader>fT",
+        function() rvm_term.open_cwd() end,
+        desc = "Terminal (Current Directory)",
+      },
+      {
+        "<c-/>",
+        function() rvm_term.open_root() end,
+        desc = "Toggle Terminal",
+      },
+      {
+        "<c-_>",
+        function() rvm_term.open_root() end,
+        desc = "Toggle Terminal",
       },
     },
   },

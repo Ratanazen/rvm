@@ -1,9 +1,31 @@
 -- lua/config/autocmds.lua
--- RVM Auto-commands
+-- RVM Auto-commands & Terminal Event Hooks
 
 local function augroup(name)
   return vim.api.nvim_create_augroup("rvm_" .. name, { clear = true })
 end
+
+-- Responsive Terminal Resize on VimResized
+vim.api.nvim_create_autocmd("VimResized", {
+  group = augroup("terminal_resize"),
+  callback = function()
+    local rvm_term_ok, rvm_term = pcall(require, "rvm.terminal")
+    if rvm_term_ok then
+      rvm_term.resize()
+    end
+  end,
+})
+
+-- Terminal Buffer Options (no line numbers, no relative numbers, no signcolumn)
+vim.api.nvim_create_autocmd("TermOpen", {
+  group = augroup("terminal_open"),
+  callback = function(event)
+    vim.opt_local.number = false
+    vim.opt_local.relativenumber = false
+    vim.opt_local.signcolumn = "no"
+    vim.opt_local.scrolloff = 0
+  end,
+})
 
 -- Highlight on yank
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -13,21 +35,11 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
--- Resize splits if window got resized
-vim.api.nvim_create_autocmd({ "VimResized" }, {
-  group = augroup("resize_splits"),
-  callback = function()
-    local current_tab = vim.fn.tabpagenr()
-    vim.cmd("tabdo wincmd =")
-    vim.cmd("tabnext " .. current_tab)
-  end,
-})
-
--- Go to last loc when opening a buffer
+-- Restore cursor location on BufReadPost
 vim.api.nvim_create_autocmd("BufReadPost", {
   group = augroup("last_loc"),
   callback = function(event)
-    local exclude = { "gitcommit" }
+    local exclude = { "gitcommit", "terminal" }
     local buf = event.buf
     if vim.tbl_contains(exclude, vim.bo[buf].filetype) or vim.b[buf].rvm_last_loc then
       return

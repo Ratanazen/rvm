@@ -1,0 +1,418 @@
+use crossterm::{
+    event::{self, Event, KeyCode, KeyEvent, KeyModifiers},
+    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
+    ExecutableCommand,
+};
+use ratatui::backend::CrosstermBackend;
+use ratatui::Terminal;
+use std::io::{stdout, Result};
+use std::path::{Path, PathBuf};
+
+use crate::buffer::Buffer;
+use crate::explorer::FileExplorer;
+use crate::keymap::{Keymap, KeymapResult};
+use crate::style::Style;
+use crate::theme::Theme;
+use crate::ui::UI;
+use crate::vim::VimMode;
+use crate::whichkey::WhichKey;
+
+pub struct App {
+    pub buffers: Vec<Buffer>,
+    pub buf_index: usize,
+    pub explorer: FileExplorer,
+    pub themes: Vec<Theme>,
+    pub current_theme_index: usize,
+    pub style: Style,
+    pub keymap: Keymap,
+    pub whichkey: WhichKey,
+    pub command_input: String,
+    pub search_input: String,
+    pub status_msg: String,
+    pub should_quit: bool,
+    pub show_dashboard: bool,
+}
+
+impl App {
+    pub fn new<P: AsRef<Path>>(target_path: Option<P>) -> Result<Self> {
+        let mut explorer_root =
+            std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
+        let mut initial_buffers: Vec<Buffer> = vec![Buffer::new_empty()];
+        let mut show_dashboard = true;
+        let mut initial_index = 0;
+
+        if let Some(ref path) = target_path {
+            let path_ref = path.as_ref();
+            if path_ref.is_dir() {
+                explorer_root = path_ref.to_path_buf();
+                show_dashboard = true;
+            } else if path_ref.is_file() {
+                if let Ok(buf) = Buffer::from_file(path_ref) {
+                    initial_buffers = vec![buf];
+                    initial_index = 0;
+                    show_dashboard = false;
+                } else {
+                    let mut buf = Buffer::new_empty();
+                    buf.file_path = Some(path_ref.to_path_buf());
+                    initial_buffers = vec![buf];
+                    show_dashboard = false;
+                }
+                if let Some(parent) = path_ref.parent() {
+                    if parent.exists() {
+                        explorer_root = parent.to_path_buf();
+                    }
+                }
+            } else {
+                let mut buf = Buffer::new_empty();
+                buf.file_path = Some(path_ref.to_path_buf());
+                initial_buffers = vec![buf];
+                show_dashboard = false;
+                if let Some(parent) = path_ref.parent() {
+                    if parent.exists() {
+                        explorer_root = parent.to_path_buf();
+                    }
+                }
+            }
+        }
+
+        let explorer = FileExplorer::new(explorer_root);
+        let themes = Theme::all();
+        // Default theme is terminal-native (index 0 per spec requirement #13)
+        let current_theme_index = 0;
+        let style = Style::default_style();
+
+        Ok(Self {
+            buffers: initial_buffers,
+            buf_index: initial_index,
+            explorer,
+            themes,
+            current_theme_index,
+            style,
+            keymap: Keymap::new(),
+            whichkey: WhichKey::new(),
+            command_input: String::new(),
+            search_input: String::new(),
+            status_msg: String::new(),
+            should_quit: false,
+            show_dashboard,
+        })
+    }
+
+    pub fn run(&mut self) -> Result<()> {
+        enable_raw_mode()?;
+        stdout().execute(EnterAlternateScreen)?;
+
+        let backend = CrosstermBackend::new(stdout());
+        let mut terminal = Terminal::new(backend)?;
+
+        while !self.should_quit {
+            let current_theme = &self.themes[self.current_theme_index].clone();
+            let style = self.style.clone();
+            let active_buffer = &self.buffers[self.buf_index];
+
+            let ui = UI {
+                theme: current_theme.clone(),
+                style,
+                vim_mode: self.keymap.mode,
+                command_input: &self.command_input,
+                search_input: &self.search_input,
+                status_msg: &self.status_msg,
+                show_dashboard: self.show_dashboard,
+                whichkey: &self.whichkey,
+            };
+
+            terminal.draw(|f| {
+                ui.render(f, active_buffer, &self.explorer);
+                // Bufferline at top if style says so
+                // Statusline at bottom
+                crate::bufferline::render_bufferline(
+                    f,
+                    ratatui::layout::Rect::new(0, 0, f.area().width, 1),
+                    &self.buffers,
+                    self.buf_index,
+                    &current_theme.colors,
+                );
+            })?;
+
+            if let Event::Key(key) = event::read()? {
+                self.handle_key_event(key);
+            }
+        }
+
+        disable_raw_mode()?;
+        stdout().execute(LeaveAlternateScreen)?;
+        Ok(())
+    }
+
+    fn handle_key_event(&mut self, key: KeyEvent) {
+        // Leader key (Space) opens which-key popup (per spec requirement #16)
+        if let KeyCode::Char(' ') = key.code {
+            if !self.keymap.mode.is_insert_family() && !self.whichkey.is_open() {
+                self.whichkey.open();
+                self.status_msg = "Leader (Space) — press a key...".to_string();
+                return;
+            }
+        }
+
+        // Which-key popup takes precedence
+        if self.whichkey.is_open() {
+            if let KeyCode::Char(c) = key.code {
+                let (kind, payload) = self.whichkey.feed(c);
+                match kind {
+                    "chord" => {
+                        if let Some(action) = payload {
+                            self.dispatch_action(&action);
+                        }
+                    }
+                    "prefix" => {
+                        if let Some(p) = payload {
+                            self.status_msg = format!("Which-key: {}", p);
+                        }
+                    }
+                    "cancel" => {
+                        self.status_msg = "Leader cancelled".to_string();
+                    }
+                    _ => {}
+                }
+                return;
+            }
+            // ESC inside which-key
+            if let KeyCode::Esc = key.code {
+                self.whichkey.close();
+                return;
+            }
+            return;
+        }
+
+        // Universal Ctrl-* shortcuts
+        if key.modifiers.contains(KeyModifiers::CONTROL) {
+            match key.code {
+                KeyCode::Char('s') => {
+                    let buf = &mut self.buffers[self.buf_index];
+                    if let Err(e) = buf.save() {
+                        self.status_msg = format!("Error saving: {}", e);
+                    } else {
+                        self.status_msg = "File saved successfully".to_string();
+                    }
+                    return;
+                }
+                KeyCode::Char('q') => {
+                    self.should_quit = true;
+                    return;
+                }
+                KeyCode::Char('z') => {
+                    self.buffers[self.buf_index].undo();
+                    return;
+                }
+                KeyCode::Char('y') => {
+                    self.buffers[self.buf_index].redo();
+                    return;
+                }
+                KeyCode::Char('f') => {
+                    self.keymap.mode = VimMode::Search;
+                    self.search_input.clear();
+                    return;
+                }
+                KeyCode::Char('e') => {
+                    self.explorer.toggle_visibility();
+                    return;
+                }
+                _ => {}
+            }
+        }
+
+        // Dispatch through keymap
+        let buf = &mut self.buffers[self.buf_index];
+        let result = self.keymap.handle(key, buf);
+
+        match result {
+            KeymapResult::SwitchMode(new_mode) => {
+                self.keymap.mode = new_mode;
+            }
+            KeymapResult::Command(cmd) => {
+                self.execute_command(&cmd);
+            }
+            KeymapResult::SearchQuery(q) => {
+                let buf = &mut self.buffers[self.buf_index];
+                buf.search(&q);
+            }
+            KeymapResult::Quit => {
+                self.should_quit = true;
+            }
+            _ => {}
+        }
+
+        // Sync command/search input for display
+        self.command_input = self.keymap.command_input.clone();
+        self.search_input = self.keymap.search_input.clone();
+    }
+
+    fn dispatch_action(&mut self, action: &str) {
+        match action {
+            "file_save" => {
+                let buf = &mut self.buffers[self.buf_index];
+                if let Err(e) = buf.save() {
+                    self.status_msg = format!("Save error: {}", e);
+                } else {
+                    self.status_msg = "Saved".to_string();
+                }
+            }
+            "app_quit" => {
+                let buf = &self.buffers[self.buf_index];
+                if buf.is_dirty {
+                    self.status_msg = "Unsaved changes (use 'q!' to force)".to_string();
+                } else {
+                    self.should_quit = true;
+                }
+            }
+            "explorer_toggle" => {
+                self.explorer.toggle_visibility();
+                self.status_msg = "Explorer toggled".to_string();
+            }
+            "buffer_next" => {
+                if self.buffers.len() > 1 {
+                    self.buf_index = (self.buf_index + 1) % self.buffers.len();
+                }
+            }
+            "buffer_prev" => {
+                if self.buffers.len() > 1 {
+                    self.buf_index = if self.buf_index == 0 {
+                        self.buffers.len() - 1
+                    } else {
+                        self.buf_index - 1
+                    };
+                }
+            }
+            "buffer_delete" => {
+                if self.buffers.len() > 1 {
+                    self.buffers.remove(self.buf_index);
+                    if self.buf_index >= self.buffers.len() {
+                        self.buf_index = self.buffers.len() - 1;
+                    }
+                } else {
+                    self.buffers[0] = Buffer::new_empty();
+                }
+            }
+            "buffer_new" => {
+                self.buffers.push(Buffer::new_empty());
+                self.buf_index = self.buffers.len() - 1;
+            }
+            "theme_cycle" => {
+                self.current_theme_index = (self.current_theme_index + 1) % self.themes.len();
+                self.status_msg = format!("Theme: {}", self.themes[self.current_theme_index].name);
+            }
+            "edit_undo" => {
+                self.buffers[self.buf_index].undo();
+            }
+            "edit_redo" => {
+                self.buffers[self.buf_index].redo();
+            }
+            "git_status" => {
+                self.status_msg = "Git: see Lua implementation for full git workflow".to_string();
+            }
+            "finder_files" => {
+                self.status_msg = "Finder: see Lua implementation".to_string();
+            }
+            "terminal_toggle" => {
+                self.status_msg = "Terminal: see Lua implementation".to_string();
+            }
+            "lsp_hover" => {
+                self.status_msg = "LSP: hover (see Lua implementation)".to_string();
+            }
+            "lsp_format" => {
+                self.status_msg = "LSP: format (see Lua implementation)".to_string();
+            }
+            _ => {
+                self.status_msg = format!("Action '{}' (see Lua implementation)", action);
+            }
+        }
+    }
+
+    fn execute_command(&mut self, cmd: &str) {
+        let cmd = cmd.trim();
+        if cmd.is_empty() {
+            return;
+        }
+        if cmd == "w" || cmd == "write" {
+            let buf = &mut self.buffers[self.buf_index];
+            if let Err(e) = buf.save() {
+                self.status_msg = format!("Error: {}", e);
+            } else {
+                self.status_msg = "Written".to_string();
+            }
+        } else if cmd == "q" || cmd == "quit" {
+            let buf = &self.buffers[self.buf_index];
+            if buf.is_dirty {
+                self.status_msg = "No write since last change (add ! to override)".to_string();
+            } else {
+                self.should_quit = true;
+            }
+        } else if cmd == "wq" || cmd == "x" {
+            let buf = &mut self.buffers[self.buf_index];
+            let _ = buf.save();
+            self.should_quit = true;
+        } else if cmd == "q!" || cmd == "quit!" {
+            self.should_quit = true;
+        } else if cmd == "theme" {
+            self.current_theme_index = (self.current_theme_index + 1) % self.themes.len();
+            self.status_msg = format!("Theme: {}", self.themes[self.current_theme_index].name);
+        } else if let Some(rest) = cmd.strip_prefix("theme ") {
+            let query = rest.trim().to_lowercase();
+            if let Some((idx, theme)) = self
+                .themes
+                .iter()
+                .enumerate()
+                .find(|(_, t)| t.name.to_lowercase().contains(&query) || t.id.contains(&query))
+            {
+                self.current_theme_index = idx;
+                self.status_msg = format!("Applied theme: {}", theme.name);
+            } else {
+                self.status_msg = format!("Theme '{}' not found", query);
+            }
+        } else if cmd == "ls" || cmd == "buffers" {
+            let names: Vec<String> = self
+                .buffers
+                .iter()
+                .enumerate()
+                .map(|(i, b)| {
+                    let mark = if i == self.buf_index { "*" } else { " " };
+                    let dirty = if b.is_dirty { "+" } else { " " };
+                    let name = b
+                        .file_path
+                        .as_ref()
+                        .and_then(|p| p.file_name())
+                        .map(|n| n.to_string_lossy().to_string())
+                        .unwrap_or_else(|| "Untitled".to_string());
+                    format!("{}{}{} {}", i + 1, mark, dirty, name)
+                })
+                .collect();
+            self.status_msg = format!("Buffers: {}", names.join(" | "));
+        } else if let Some(rest) = cmd.strip_prefix("b ") {
+            if let Ok(idx) = rest.trim().parse::<usize>() {
+                if idx >= 1 && idx <= self.buffers.len() {
+                    self.buf_index = idx - 1;
+                    self.status_msg = format!("Switched to buffer {}", idx);
+                } else {
+                    self.status_msg = "Invalid buffer index".to_string();
+                }
+            }
+        } else if cmd == "bd" || cmd == "bdelete" {
+            self.dispatch_action("buffer_delete");
+        } else if let Some(rest) = cmd.strip_prefix("e ") {
+            // Open file
+            let path = rest.trim();
+            match Buffer::from_file(path) {
+                Ok(buf) => {
+                    self.buffers.push(buf);
+                    self.buf_index = self.buffers.len() - 1;
+                    self.status_msg = format!("Opened: {}", path);
+                }
+                Err(e) => {
+                    self.status_msg = format!("Error opening: {}", e);
+                }
+            }
+        } else {
+            self.status_msg = format!("Not an editor command: :{}", cmd);
+        }
+    }
+}

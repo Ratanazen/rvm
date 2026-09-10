@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# RVM 2.0 launcher — path-portable
+# Resolves the script directory at runtime so users can install anywhere.
+RVM_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec lua "$RVM_ROOT/init.lua" "$@"

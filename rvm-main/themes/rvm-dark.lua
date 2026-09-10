@@ -1,0 +1,20 @@
+return {
+    id = "rvm-dark",
+    name = "1. RVM Dark",
+    editor_bg = {30, 30, 30},
+    sidebar_bg = {37, 37, 38},
+    header_bg = {45, 45, 45},
+    status_bg = {0, 122, 204},
+    status_fg = {255, 255, 255},
+    text = {204, 204, 204},
+    muted = {133, 133, 133},
+    border = {60, 60, 60},
+    accent = {0, 122, 204},
+    keyword = {86, 156, 214},
+    string = {206, 145, 120},
+    number = {181, 206, 168},
+    function_name = {220, 220, 170},
+    comment = {106, 153, 85},
+    selection = {38, 79, 120},
+    cursor = {255, 255, 255}
+}

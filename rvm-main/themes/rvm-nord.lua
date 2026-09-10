@@ -1,0 +1,20 @@
+return {
+    id = "rvm-nord",
+    name = "5. RVM Nord",
+    editor_bg = {46, 52, 64},
+    sidebar_bg = {39, 44, 54},
+    header_bg = {59, 66, 82},
+    status_bg = {94, 129, 172},
+    status_fg = {236, 239, 244},
+    text = {216, 222, 233},
+    muted = {76, 86, 106},
+    border = {59, 66, 82},
+    accent = {136, 192, 208},
+    keyword = {129, 161, 193},
+    string = {163, 190, 140},
+    number = {180, 142, 173},
+    function_name = {136, 192, 208},
+    comment = {97, 110, 136},
+    selection = {67, 76, 94},
+    cursor = {216, 222, 233}
+}

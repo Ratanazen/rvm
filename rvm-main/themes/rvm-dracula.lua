@@ -1,0 +1,20 @@
+return {
+    id = "rvm-dracula",
+    name = "4. RVM Dracula",
+    editor_bg = {40, 42, 54},
+    sidebar_bg = {33, 34, 44},
+    header_bg = {50, 52, 65},
+    status_bg = {98, 114, 164},
+    status_fg = {248, 248, 242},
+    text = {248, 248, 242},
+    muted = {98, 114, 164},
+    border = {68, 71, 90},
+    accent = {189, 147, 249},
+    keyword = {255, 121, 198},
+    string = {241, 250, 140},
+    number = {189, 147, 249},
+    function_name = {80, 250, 123},
+    comment = {98, 114, 164},
+    selection = {68, 71, 90},
+    cursor = {248, 248, 242}
+}

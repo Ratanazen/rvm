@@ -99,6 +99,7 @@ export function parseAndExecuteCLI(
     case 'help':
       return {
         output: `\x1b[1;33mRVM Integrated Terminal Commands:\x1b[0m
+  \x1b[36mrvm [file|dir]\x1b[0m      - Launch RVM 2.0 Terminal Code Editor (Vim + LazyVim UX)
   \x1b[36mcd <dir>\x1b[0m            - Change directory (e.g. \`cd src\`, \`cd ..\`)
   \x1b[36mls\x1b[0m / \x1b[36mdir\x1b[0m           - List directory contents
   \x1b[36mmkdir <dir>\x1b[0m        - Create new directory
@@ -263,6 +264,54 @@ export function parseAndExecuteCLI(
         };
       }
       return { output: `\x1b[31mcode: ${fileName} not found\x1b[0m` };
+    }
+
+    case 'rvm': {
+      const target = args[0];
+      if (!target || target === '.') {
+        return {
+          newCwd: cwd,
+          output: `\x1b[1;36m⚡ RVM 2.0 — Native Terminal Code Editor (Vim + LazyVim UX)\x1b[0m
+\x1b[32m✔ [RVM Session Active]\x1b[0m Project root: \x1b[33mC:\\Projects\\${cwd.replace(/\//g, '\\')}\x1b[0m
+\x1b[90mModes: NORMAL | INSERT | VISUAL | COMMAND | SEARCH | REPLACE\x1b[0m
+\x1b[90mLeader key: <Space> for Which-Key popup menu (<leader>ff, <leader>fg, <leader>e, etc.)\x1b[0m`
+        };
+      }
+
+      const filePath = resolvePath(target);
+      const node = findNodeByPath(currentVFS, filePath);
+      if (node && node.type === 'file') {
+        return {
+          openFile: filePath,
+          output: `\x1b[1;36m⚡ RVM 2.0 Terminal Editor\x1b[0m
+\x1b[32m✔ Opened ${target} in RVM Monaco Buffer\x1b[0m`
+        };
+      } else if (node && node.type === 'directory') {
+        return {
+          newCwd: filePath,
+          output: `\x1b[1;36m⚡ RVM 2.0 Terminal Editor\x1b[0m
+\x1b[32m✔ Switched RVM workspace to directory: ${target}\x1b[0m`
+        };
+      } else {
+        // Create new file and open in buffer
+        const fileName = target.split('/').pop() || target;
+        const newFile: VFSItem = {
+          id: `file-${Date.now()}`,
+          name: fileName,
+          path: filePath,
+          type: 'file',
+          language: getLanguageFromPath(fileName),
+          content: `// RVM 2.0 Buffer — ${fileName}\n`
+        };
+        const targetParentPath = filePath.substring(0, filePath.lastIndexOf('/')) || cwd;
+        const updatedVFS = insertNode(currentVFS, targetParentPath, newFile);
+        return {
+          newVFS: updatedVFS,
+          openFile: filePath,
+          output: `\x1b[1;36m⚡ RVM 2.0 Terminal Editor\x1b[0m
+\x1b[32m✔ Created new buffer and opened ${fileName}\x1b[0m`
+        };
+      }
     }
 
     case 'npm': {

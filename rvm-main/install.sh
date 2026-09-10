@@ -23,7 +23,11 @@ cp "$SCRIPT_DIR/rvm" "$HOME/.local/bin/rvm"
 cat > "$HOME/.local/bin/rvm" <<EOF
 #!/usr/bin/env bash
 RVM_ROOT="$SCRIPT_DIR"
-exec lua "\$RVM_ROOT/init.lua" "\$@"
+if [ -x "\$HOME/.local/bin/rvm-native" ]; then
+    exec "\$HOME/.local/bin/rvm-native" "\$@"
+else
+    exec nvim -u "\$RVM_ROOT/init.lua" "\$@"
+fi
 EOF
 chmod +x "$HOME/.local/bin/rvm"
 

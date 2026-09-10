@@ -1,18 +1,26 @@
 -- lua/rvm/init.lua
--- RVM Core framework entry point
+-- RVM (Ratana Vim) Core Entry Point
 
-local khmer = require("rvm.khmer")
-local rvm_config = require("rvm.config")
-local rvm_commands = require("rvm.commands")
+local config = require("rvm.config")
+local lang = require("rvm.language")
+local commands = require("rvm.commands")
+local ui = require("rvm.ui")
+local health = require("rvm.health")
+local utils = require("rvm.utils")
 
 local M = {}
 
 function M.setup(opts)
-  rvm_config.setup(opts)
-  rvm_commands.setup()
+  config.setup(opts)
+  commands.setup()
 end
 
-M.t = khmer.t
-M.set_lang = khmer.set_lang
+M.config = config
+M.lang = lang
+M.ui = ui
+M.health = health
+M.utils = utils
+M.t = lang.t
+M.set_lang = lang.set
 
 return M

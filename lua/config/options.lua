@@ -38,11 +38,21 @@ opt.autowrite = true
 opt.clipboard = "unnamedplus"
 opt.cmdheight = 1
 opt.completeopt = "menu,menuone,noselect"
+opt.confirm = true
 opt.cursorline = true
 opt.expandtab = true
 opt.fillchars = "eob: ,vert:│,horiz:─"
+opt.formatoptions = "jcroql"
+opt.grepformat = "%f:%l:%c:%m"
+if vim.fn.executable("rg") == 1 then
+  opt.grepprg = "rg --vimgrep"
+end
 opt.ignorecase = true
+opt.inccommand = "nosplit"
+opt.jumpoptions = "stack"
 opt.laststatus = 3 -- Global statusline
+opt.list = true
+opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 opt.mouse = "a"
 opt.mousemodel = "popup_g" -- Right click popup menu
 opt.number = true
@@ -50,18 +60,25 @@ opt.pumblend = 0
 opt.pumheight = 10
 opt.relativenumber = true
 opt.scrolloff = 5
-opt.sidescrolloff = 8
+opt.sessionoptions = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp", "folds" }
+opt.shiftround = true
 opt.shiftwidth = 2
+opt.shortmess:append({ W = true, I = true, c = true, C = true })
 opt.showmode = false
 opt.showtabline = 2
+opt.sidescrolloff = 8
 opt.signcolumn = "yes"
 opt.smartcase = true
 opt.smartindent = true
+opt.smoothscroll = true
 opt.splitbelow = true
 opt.splitright = true
 opt.tabstop = 2
+opt.timeoutlen = 300
 opt.undofile = true
 opt.updatetime = 200
+opt.virtualedit = "block"
 opt.winblend = 0
 opt.winborder = "single"
 opt.wrap = false
+

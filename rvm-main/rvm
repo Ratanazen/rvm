@@ -1,9 +1,25 @@
 #!/usr/bin/env bash
-# RVM 2.0 launcher — path-portable
-# Resolves the script directory at runtime so users can install anywhere.
+# RVM (Ratana Vim) — Powered by Neovim Core Engine (github.com/neovim/neovim)
+# Combines Neovim runtime, LazyVim architecture, Tree-sitter, LSP, and Khmer UI.
 RVM_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-if [ -x "$HOME/.local/bin/rvm-native" ]; then
+
+# Check if user explicitly requested Rust native TUI fallback
+if [ "$1" = "--native" ]; then
+    shift
+    if [ -x "$HOME/.local/bin/rvm-native" ]; then
+        exec "$HOME/.local/bin/rvm-native" "$@"
+    else
+        echo "Error: rvm-native binary not found."
+        exit 1
+    fi
+fi
+
+# Primary engine: Full Neovim (github.com/neovim/neovim)
+if command -v nvim >/dev/null 2>&1; then
+    exec nvim -u "$RVM_ROOT/init.lua" "$@"
+elif [ -x "$HOME/.local/bin/rvm-native" ]; then
     exec "$HOME/.local/bin/rvm-native" "$@"
 else
-    exec nvim -u "$RVM_ROOT/init.lua" "$@"
+    echo "Error: Neovim (nvim) is not installed on this system."
+    exit 1
 fi

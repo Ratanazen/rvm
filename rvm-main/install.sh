@@ -22,11 +22,23 @@ cp "$SCRIPT_DIR/rvm" "$HOME/.local/bin/rvm"
 # 3. Fix the launcher to point to the install location
 cat > "$HOME/.local/bin/rvm" <<EOF
 #!/usr/bin/env bash
+# RVM (Ratana Vim) — Powered by Neovim Core Engine (github.com/neovim/neovim)
 RVM_ROOT="$SCRIPT_DIR"
-if [ -x "\$HOME/.local/bin/rvm-native" ]; then
+
+if [ "\$1" = "--native" ]; then
+    shift
+    if [ -x "\$HOME/.local/bin/rvm-native" ]; then
+        exec "\$HOME/.local/bin/rvm-native" "\$@"
+    fi
+fi
+
+if command -v nvim >/dev/null 2>&1; then
+    exec nvim -u "\$RVM_ROOT/init.lua" "\$@"
+elif [ -x "\$HOME/.local/bin/rvm-native" ]; then
     exec "\$HOME/.local/bin/rvm-native" "\$@"
 else
-    exec nvim -u "\$RVM_ROOT/init.lua" "\$@"
+    echo "Error: Neovim (nvim) is not installed."
+    exit 1
 fi
 EOF
 chmod +x "$HOME/.local/bin/rvm"

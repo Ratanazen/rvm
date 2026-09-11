@@ -42,12 +42,16 @@ return {
     },
   },
 
-  -- Restrained Which-Key
+  -- Restrained Which-Key (Single Border & Padding)
   {
     "folke/which-key.nvim",
     event = "VeryLazy",
     opts = {
       preset = "classic",
+      win = {
+        border = "single",
+        padding = { 1, 2 },
+      },
     },
   },
 }

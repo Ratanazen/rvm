@@ -42,6 +42,18 @@ impl Buffer {
         }
     }
 
+    pub fn open_or_create<P: AsRef<Path>>(path: P) -> Self {
+        let path_ref = path.as_ref();
+        if path_ref.is_file() {
+            if let Ok(buf) = Self::from_file(path_ref) {
+                return buf;
+            }
+        }
+        let mut buf = Self::new_empty();
+        buf.file_path = Some(path_ref.to_path_buf());
+        buf
+    }
+
     pub fn from_file<P: AsRef<Path>>(path: P) -> std::io::Result<Self> {
         const BUF_LIMIT: usize = 10_000_000;
         let path_buf = path.as_ref().to_path_buf();
@@ -193,6 +205,24 @@ impl Buffer {
             self.cursor_row -= 1;
             self.lines[self.cursor_row].push_str(&curr_line);
             self.cursor_col = prev_line_len;
+            self.is_dirty = true;
+        }
+    }
+
+    pub fn delete_char_forward(&mut self) {
+        if self.cursor_row >= self.lines.len() {
+            return;
+        }
+        let line_len = self.lines[self.cursor_row].len();
+        if self.cursor_col < line_len {
+            self.save_state();
+            let line = &mut self.lines[self.cursor_row];
+            line.remove(self.cursor_col);
+            self.is_dirty = true;
+        } else if self.cursor_row + 1 < self.lines.len() {
+            self.save_state();
+            let next_line = self.lines.remove(self.cursor_row + 1);
+            self.lines[self.cursor_row].push_str(&next_line);
             self.is_dirty = true;
         }
     }

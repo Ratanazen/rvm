@@ -1,5 +1,8 @@
 use crossterm::{
-    event::{self, Event, KeyCode, KeyEvent, KeyModifiers},
+    event::{
+        self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, KeyEvent, KeyModifiers,
+        MouseButton, MouseEvent, MouseEventKind,
+    },
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
     ExecutableCommand,
 };
@@ -46,26 +49,10 @@ impl App {
             if path_ref.is_dir() {
                 explorer_root = path_ref.to_path_buf();
                 show_dashboard = true;
-            } else if path_ref.is_file() {
-                if let Ok(buf) = Buffer::from_file(path_ref) {
-                    initial_buffers = vec![buf];
-                    initial_index = 0;
-                    show_dashboard = false;
-                } else {
-                    let mut buf = Buffer::new_empty();
-                    buf.file_path = Some(path_ref.to_path_buf());
-                    initial_buffers = vec![buf];
-                    show_dashboard = false;
-                }
-                if let Some(parent) = path_ref.parent() {
-                    if parent.exists() {
-                        explorer_root = parent.to_path_buf();
-                    }
-                }
             } else {
-                let mut buf = Buffer::new_empty();
-                buf.file_path = Some(path_ref.to_path_buf());
+                let buf = Buffer::open_or_create(path_ref);
                 initial_buffers = vec![buf];
+                initial_index = 0;
                 show_dashboard = false;
                 if let Some(parent) = path_ref.parent() {
                     if parent.exists() {
@@ -77,7 +64,6 @@ impl App {
 
         let explorer = FileExplorer::new(explorer_root);
         let themes = Theme::all();
-        // Default theme is terminal-native (index 0 per spec requirement #13)
         let current_theme_index = 0;
         let style = Style::default_style();
 
@@ -101,6 +87,7 @@ impl App {
     pub fn run(&mut self) -> Result<()> {
         enable_raw_mode()?;
         stdout().execute(EnterAlternateScreen)?;
+        stdout().execute(EnableMouseCapture)?;
 
         let backend = CrosstermBackend::new(stdout());
         let mut terminal = Terminal::new(backend)?;
@@ -123,8 +110,6 @@ impl App {
 
             terminal.draw(|f| {
                 ui.render(f, active_buffer, &self.explorer);
-                // Bufferline at top if style says so
-                // Statusline at bottom
                 crate::bufferline::render_bufferline(
                     f,
                     ratatui::layout::Rect::new(0, 0, f.area().width, 1),
@@ -134,11 +119,14 @@ impl App {
                 );
             })?;
 
-            if let Event::Key(key) = event::read()? {
-                self.handle_key_event(key);
+            match event::read()? {
+                Event::Key(key) => self.handle_key_event(key),
+                Event::Mouse(mouse) => self.handle_mouse_event(mouse),
+                _ => {}
             }
         }
 
+        stdout().execute(DisableMouseCapture)?;
         disable_raw_mode()?;
         stdout().execute(LeaveAlternateScreen)?;
         Ok(())
@@ -272,6 +260,58 @@ impl App {
         // Sync command/search input for display
         self.command_input = self.keymap.command_input.clone();
         self.search_input = self.keymap.search_input.clone();
+    }
+
+    fn handle_mouse_event(&mut self, mouse: MouseEvent) {
+        match mouse.kind {
+            MouseEventKind::Down(MouseButton::Left) => {
+                let col = mouse.column;
+                let row = mouse.row;
+                let explorer_width = self.style.explorer_width;
+
+                if self.explorer.is_visible && col < explorer_width {
+                    if row >= 1 {
+                        let entry_idx = (row - 1) as usize;
+                        if entry_idx < self.explorer.entries.len() {
+                            self.explorer.selected_index = entry_idx;
+                            let entry = self.explorer.entries[entry_idx].clone();
+                            if entry.is_dir {
+                                self.explorer.root_path = entry.path;
+                                self.explorer.refresh();
+                            } else {
+                                let buf = Buffer::open_or_create(&entry.path);
+                                self.buffers.push(buf);
+                                self.buf_index = self.buffers.len() - 1;
+                                self.show_dashboard = false;
+                                self.status_msg = format!("Opened {}", entry.name);
+                            }
+                        }
+                    }
+                } else if row >= 1 {
+                    let target_row = (row - 1) as usize;
+                    let target_col = if self.explorer.is_visible {
+                        col.saturating_sub(explorer_width) as usize
+                    } else {
+                        col as usize
+                    };
+                    let buf = &mut self.buffers[self.buf_index];
+                    buf.cursor_row = target_row.min(buf.lines.len().saturating_sub(1));
+                    buf.cursor_col = target_col;
+                    buf.clamp_cursor();
+                }
+            }
+            MouseEventKind::ScrollUp => {
+                let buf = &mut self.buffers[self.buf_index];
+                buf.cursor_row = buf.cursor_row.saturating_sub(3);
+                buf.clamp_cursor();
+            }
+            MouseEventKind::ScrollDown => {
+                let buf = &mut self.buffers[self.buf_index];
+                buf.cursor_row = (buf.cursor_row + 3).min(buf.lines.len().saturating_sub(1));
+                buf.clamp_cursor();
+            }
+            _ => {}
+        }
     }
 
     fn dispatch_action(&mut self, action: &str) {
@@ -426,17 +466,13 @@ impl App {
         } else if cmd == "bd" || cmd == "bdelete" {
             self.dispatch_action("buffer_delete");
         } else if let Some(rest) = cmd.strip_prefix("e ") {
-            // Open file
             let path = rest.trim();
-            match Buffer::from_file(path) {
-                Ok(buf) => {
-                    self.buffers.push(buf);
-                    self.buf_index = self.buffers.len() - 1;
-                    self.status_msg = format!("Opened: {}", path);
-                }
-                Err(e) => {
-                    self.status_msg = format!("Error opening: {}", e);
-                }
+            if !path.is_empty() {
+                let buf = Buffer::open_or_create(path);
+                self.buffers.push(buf);
+                self.buf_index = self.buffers.len() - 1;
+                self.show_dashboard = false;
+                self.status_msg = format!("Opened: {}", path);
             }
         } else {
             self.status_msg = format!("Not an editor command: :{}", cmd);

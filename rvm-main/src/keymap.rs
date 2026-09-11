@@ -247,6 +247,20 @@ impl Keymap {
                 buffer.cursor_col = self.line_len(buffer).max(1);
                 KeymapResult::Moved
             }
+            KeyCode::PageUp => {
+                buffer.cursor_row = buffer.cursor_row.saturating_sub(15);
+                buffer.clamp_cursor();
+                KeymapResult::Scrolled
+            }
+            KeyCode::PageDown => {
+                buffer.cursor_row = (buffer.cursor_row + 15).min(buffer.lines.len().saturating_sub(1));
+                buffer.clamp_cursor();
+                KeymapResult::Scrolled
+            }
+            KeyCode::Delete => {
+                buffer.delete_char_forward();
+                KeymapResult::Edited
+            }
             KeyCode::Char('g') => {
                 self.pending = PendingKey::G;
                 KeymapResult::Pending(PendingKey::G)
@@ -380,6 +394,28 @@ impl Keymap {
                 buffer.delete_char();
                 KeymapResult::Deleted
             }
+            KeyCode::Delete => {
+                buffer.delete_char_forward();
+                KeymapResult::Deleted
+            }
+            KeyCode::Home => {
+                buffer.cursor_col = 0;
+                KeymapResult::Moved
+            }
+            KeyCode::End => {
+                buffer.cursor_col = self.line_len(buffer);
+                KeymapResult::Moved
+            }
+            KeyCode::PageUp => {
+                buffer.cursor_row = buffer.cursor_row.saturating_sub(15);
+                buffer.clamp_cursor();
+                KeymapResult::Moved
+            }
+            KeyCode::PageDown => {
+                buffer.cursor_row = (buffer.cursor_row + 15).min(buffer.lines.len().saturating_sub(1));
+                buffer.clamp_cursor();
+                KeymapResult::Moved
+            }
             KeyCode::Tab => {
                 for _ in 0..4 {
                     buffer.insert_char(' ');
@@ -450,6 +486,24 @@ impl Keymap {
             }
             KeyCode::Char('k') | KeyCode::Up => {
                 buffer.cursor_row = buffer.cursor_row.saturating_sub(1);
+                buffer.clamp_cursor();
+                KeymapResult::Moved
+            }
+            KeyCode::Home => {
+                buffer.cursor_col = 0;
+                KeymapResult::Moved
+            }
+            KeyCode::End => {
+                buffer.cursor_col = self.line_len(buffer).max(1);
+                KeymapResult::Moved
+            }
+            KeyCode::PageUp => {
+                buffer.cursor_row = buffer.cursor_row.saturating_sub(15);
+                buffer.clamp_cursor();
+                KeymapResult::Moved
+            }
+            KeyCode::PageDown => {
+                buffer.cursor_row = (buffer.cursor_row + 15).min(buffer.lines.len().saturating_sub(1));
                 buffer.clamp_cursor();
                 KeymapResult::Moved
             }

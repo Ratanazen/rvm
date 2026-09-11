@@ -83,3 +83,15 @@ map({ "n", "v" }, "<A-CR>", "<cmd>lua vim.lsp.buf.code_action()<cr>", { desc = "
 
 -- 9. Escape & Clear Search
 map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and Clear hlsearch" })
+
+-- 10. Standard Navigation Keys (Home, End, PageUp, PageDown, Delete)
+map({ "n", "v" }, "<Home>", "0", { desc = "Line Start" })
+map("i", "<Home>", "<C-o>0", { desc = "Line Start" })
+map({ "n", "v" }, "<End>", "$", { desc = "Line End" })
+map("i", "<End>", "<C-o>$", { desc = "Line End" })
+map({ "n", "v" }, "<PageUp>", "<C-b>", { desc = "Page Up" })
+map("i", "<PageUp>", "<C-o><C-b>", { desc = "Page Up" })
+map({ "n", "v" }, "<PageDown>", "<C-f>", { desc = "Page Down" })
+map("i", "<PageDown>", "<C-o><C-f>", { desc = "Page Down" })
+map("n", "<Del>", "x", { desc = "Delete Character" })
+

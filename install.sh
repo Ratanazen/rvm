@@ -42,11 +42,13 @@ else
 fi
 EOF
 chmod +x "$HOME/.local/bin/rvm"
+ln -sf "$HOME/.local/bin/rvm" "$HOME/.local/bin/rvim"
 
 # 4. Optional: Copy to /usr/local/bin if permissions allow
 if [ -w "/usr/local/bin" ]; then
     cp "$HOME/.local/bin/rvm" /usr/local/bin/rvm
-    echo "  Installed system-wide to /usr/local/bin/rvm"
+    ln -sf /usr/local/bin/rvm /usr/local/bin/rvim 2>/dev/null || true
+    echo "  Installed system-wide to /usr/local/bin/rvm (alias: rvim)"
 fi
 
 # 5. Build the native Rust binary if cargo is available

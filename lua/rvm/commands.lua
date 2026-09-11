@@ -12,6 +12,8 @@ local M = {}
 --- Setup user commands
 function M.setup()
   vim.api.nvim_create_user_command("RVM", ui.command_center, { desc = "RVM Command Center" })
+  vim.api.nvim_create_user_command("RVim", ui.command_center, { desc = "RVim Command Center Alias" })
+  vim.api.nvim_create_user_command("Neovim", ui.command_center, { desc = "Neovim Command Center Alias" })
   vim.api.nvim_create_user_command("RVMHealth", health.check, { desc = "Run RVM Health Check" })
   vim.api.nvim_create_user_command("RVMVersion", function()
     local info = require("rvm").version()

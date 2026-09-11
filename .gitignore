@@ -1,6 +1,8 @@
 node_modules/
 dist/
 target/
+neovim-src/
+vendor/
 .DS_Store
 *.log
 *.zip

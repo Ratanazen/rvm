@@ -19,6 +19,10 @@ mkdir -p "$HOME/.config/rvm"
 chmod +x "$SCRIPT_DIR/rvm"
 cp "$SCRIPT_DIR/rvm" "$HOME/.local/bin/rvm"
 
+if [ "$1" = "--build-neovim" ]; then
+    "$SCRIPT_DIR/scripts/build_neovim_source.sh"
+fi
+
 # 3. Fix the launcher to point to the install location
 cat > "$HOME/.local/bin/rvm" <<EOF
 #!/usr/bin/env bash
@@ -32,7 +36,9 @@ if [ "\$1" = "--native" ]; then
     fi
 fi
 
-if command -v nvim >/dev/null 2>&1; then
+if [ -x "\$HOME/.local/bin/rvm-engine" ]; then
+    exec "\$HOME/.local/bin/rvm-engine" -u "\$RVM_ROOT/init.lua" "\$@"
+elif command -v nvim >/dev/null 2>&1; then
     exec nvim -u "\$RVM_ROOT/init.lua" "\$@"
 elif [ -x "\$HOME/.local/bin/rvm-native" ]; then
     exec "\$HOME/.local/bin/rvm-native" "\$@"

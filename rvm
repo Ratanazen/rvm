@@ -14,8 +14,10 @@ if [ "$1" = "--native" ]; then
     fi
 fi
 
-# Primary engine: Full Neovim (github.com/neovim/neovim)
-if command -v nvim >/dev/null 2>&1; then
+# Primary engine: Source-built rvm-engine or System Neovim (github.com/neovim/neovim)
+if [ -x "$HOME/.local/bin/rvm-engine" ]; then
+    exec "$HOME/.local/bin/rvm-engine" -u "$RVM_ROOT/init.lua" "$@"
+elif command -v nvim >/dev/null 2>&1; then
     exec nvim -u "$RVM_ROOT/init.lua" "$@"
 elif [ -x "$HOME/.local/bin/rvm-native" ]; then
     exec "$HOME/.local/bin/rvm-native" "$@"

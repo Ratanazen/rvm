@@ -9,7 +9,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-echo ":: Installing RVM 2.0 — Native Terminal Code Editor (Vim + LazyVim UX)..."
+echo ":: Installing RVM 2.6 — Native Terminal Code Editor (Vim + LazyVim UX)..."
 
 # 1. Create target directories
 mkdir -p "$HOME/.local/bin"
@@ -72,7 +72,7 @@ EOF
 fi
 
 echo ""
-echo "[OK] RVM 2.0 has been installed successfully!"
+echo "[OK] RVM 2.6 has been installed successfully!"
 echo "   Executable path: $HOME/.local/bin/rvm"
 echo ""
 echo "Try running:"

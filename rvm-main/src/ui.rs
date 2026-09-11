@@ -214,7 +214,7 @@ impl<'a> UI<'a> {
         }
         lines.push(Line::from(""));
         lines.push(Line::from(Span::styled(
-            "    RVM 2.0 — Vim + LazyVim UX, native terminal editor",
+            "    RVM 2.6 — Vim + LazyVim UX, native terminal editor",
             Style::default().fg(Color::Indexed(170)),
         )));
 

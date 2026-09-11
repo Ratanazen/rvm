@@ -14,22 +14,33 @@ function M.setup()
   vim.api.nvim_create_user_command("RVM", ui.command_center, { desc = "RVM Command Center" })
   vim.api.nvim_create_user_command("RVMHealth", health.check, { desc = "Run RVM Health Check" })
   vim.api.nvim_create_user_command("RVMVersion", function()
-    local nvim_ver = vim.version()
-    local ver_str = string.format("%d.%d.%d", nvim_ver.major, nvim_ver.minor, nvim_ver.patch)
-    vim.notify(
-      "RVM (Ratana Vim) v" .. config.options.version .. "\nNeovim Engine: v" .. ver_str .. "\nMode: " .. config.options.mode:upper(),
-      vim.log.levels.INFO,
-      { title = "RVM Version" }
-    )
-  end, { desc = "Show RVM Version" })
+    local info = require("rvm").version()
+    local text = {
+      "RVM (Ratana Vim) Distribution",
+      "───────────────────────────────────────────────",
+      "• Distribution Version : v" .. info.version,
+      "• Core Engine          : " .. info.engine,
+      "• Installed Launcher   : " .. info.binary,
+      "• Native Binary        : " .. info.native_binary,
+      "• Git Repository       : " .. info.repository,
+      "• LuaJIT Runtime       : " .. info.luajit,
+      "• Operating System     : " .. info.os,
+    }
+    vim.notify(table.concat(text, "\n"), vim.log.levels.INFO, { title = "RVM Version Info" })
+  end, { desc = "Show detailed RVM version information" })
 
   vim.api.nvim_create_user_command("RVMUpdate", function()
-    vim.notify("Checking Git repository & updating Lazy plugins...", vim.log.levels.INFO, { title = "RVM Update" })
-    local lazy_ok, lazy = pcall(require, "lazy")
-    if lazy_ok then
-      lazy.update({ show = true })
+    require("rvm").update()
+  end, { desc = "Update RVM git repository and plugins" })
+
+  vim.api.nvim_create_user_command("RVMGitStatus", function()
+    local ok, lazygit = pcall(require, "lazygit")
+    if ok then
+      vim.cmd("LazyGit")
+    else
+      vim.cmd("Telescope git_status")
     end
-  end, { desc = "Update RVM components and plugins" })
+  end, { desc = "Open RVM Git Status interface" })
 
   vim.api.nvim_create_user_command("RVMKhmer", function() lang.set("km") end, { desc = "Switch to Khmer" })
   vim.api.nvim_create_user_command("RVMEnglish", function() lang.set("en") end, { desc = "Switch to English" })

@@ -1,205 +1,123 @@
 # RVM — Ratana Vim
 
-> **RVM (Ratana Vim)** is a modern, high-performance, Khmer-friendly Neovim distribution built on top of **LazyVim**, **Neovim**, and **lazy.nvim**.
+> **RVM (Ratana Vim)** is a modern, professional, Khmer-friendly Neovim distribution powered by the **Neovim Core Engine** (`github.com/neovim/neovim`), **LazyVim**, and **lazy.nvim**.
 
 ---
 
-## Features
+## 🚀 Local Run Guide (Quickstart)
 
-- **LazyVim Base & Plugin Architecture**: Full LazyVim keymaps, plugin management, and UI layout while retaining RVM's unique distribution identity.
-- **First-Class Khmer Localization (`:RVMKhmer` / `:RVMEnglish`)**: Built-in translation engine supporting both Khmer (`km`) and English (`en`) interface languages with fallback protection.
-- **RVM Distribution Commands**: `:RVM`, `:RVMVersion`, `:RVMHealth`, `:RVMUpdate`, `:RVMKhmer`, `:RVMEnglish`.
-- **Integrated Telescope & Neo-tree Navigation**: `<leader>ff` (Find Files), `<leader>fg` (Live Grep), `<leader>fr` (Recent Files), `<leader>fb` (Buffers), `<leader>e` (Explorer).
-- **VS Code & Vim/LazyVim Dual Keybindings**: Native support for VS Code shortcuts (`Ctrl+P`, `Ctrl+B`, `Ctrl+Shift+F`, `Ctrl+T`, `Ctrl+W`, `Ctrl+S`, `Ctrl+Z`, `Ctrl+Y`) alongside full Vim modes.
-- **Git signs & LazyGit Workflow (`<leader>gg` / `gg`)**: Buffer gutter indicators, blame, diffs, and integrated LazyGit terminal popup.
-- **Integrated Floating & Bottom Terminal (`<leader>ft` / `<leader>tt`)**: Powered by `snacks.nvim` using your native shell (`zsh`/`bash`/`fish`).
-- **LSP & Multi-Language Support (18+ Languages)**: Pre-configured LSPs, Treesitter syntax highlighting, autocompletion (`nvim-cmp`), and formatters (`conform.nvim`) for Lua, Python, JS, TS, Rust, Go, C, C++, Java, Kotlin, Bash, SQL, HTML, CSS, Markdown, JSON, YAML.
-- **RVM Visual Identity & OneDark / TokyoNight Themes**: Sleek dark mode with customizable floating windows, statusline, and theme fallbacks.
+After running `./install.sh`, `rvm` is available globally on your computer at `~/.local/bin/rvm`.
 
----
-
-## Requirements
-
-- **Neovim** >= `v0.9.0` (Recommended `v0.10+` or `v0.12+`)
-- **Git** >= `2.19.0`
-- **Nerd Font** (JetBrainsMono Nerd Font recommended)
-- **C Compiler** (`gcc` or `clang` for Treesitter parsers)
-- **rg (ripgrep)** & **fd** (Optional, for fast Telescope grep)
-
----
-
-## Installation
-
-### Automated Safe Installer (Recommended)
-
-Run the safe, non-destructive installation script:
+### Common Commands:
 
 ```bash
-./scripts/install.sh
-```
+# 1. Open current directory as a project in RVM
+rvm .
 
-> **Note**: The installer automatically creates a timestamped backup of your existing configuration at `~/.config/nvim.backup.<timestamp>` before applying RVM.
+# 2. Open a specific file
+rvm main.rb
 
-### Manual Installation
+# 3. Check installed RVM and Neovim engine versions
+rvm --version
 
-```bash
-# Backup existing Neovim config
-mv ~/.config/nvim ~/.config/nvim.backup.$(date +%Y%m%d_%H%M%S) 2>/dev/null || true
+# 4. Run standalone Rust TUI fallback editor
+rvm --native
 
-# Clone RVM to Neovim config directory
-git clone https://github.com/Ratanazen/rvm.git ~/.config/nvim
-
-# Launch RVM
-nvim
+# 5. Re-run local installation & build updates
+./install.sh
 ```
 
 ---
 
-## First Launch
+## ✨ Features
 
-Launch Neovim normally:
+- **Full Neovim Core Engine Integration (`github.com/neovim/neovim`)**: Powered directly by Neovim `v0.12+` runtime with LuaJIT 2.1.
+- **First-Class Khmer Localization (`:RVMKhmer` / `:RVMEnglish`)**: Built-in translation engine supporting both Khmer (`km`) and English (`en`) interface languages with fallback protection (`ធម្មតា`, `បញ្ចូល`, `មើលឃើញ`, `ពាក្យបញ្ជា`, `រក្សាទុក`, `បើក`, `ស្វែងរក`).
+- **Distribution API & User Commands**:
+  - `require("rvm").version()` / `:RVMVersion`: Displays distribution version, Neovim engine, system paths, and LuaJIT info.
+  - `require("rvm").update()` / `:RVMUpdate`: Automatically pulls latest Git repository commits and updates Lazy plugins.
+  - `:RVMGitStatus`: Launches full terminal Git workflow.
+- **Integrated Telescope & Neo-tree Navigation**: Single-click mouse file opening, `<leader>ff` (Find Files), `<leader>fg` (Live Grep), `<leader>fr` (Recent Files), `<leader>fb` (Buffers), `<leader>e` (Explorer).
+- **VS Code & Vim Dual Keybindings**: Full VS Code shortcuts (`Ctrl+P`, `Ctrl+B`, `Ctrl+Shift+F`, `Ctrl+T`, `Ctrl+W`, `Ctrl+S`, `Ctrl+Z`, `Ctrl+Y`, `Ctrl+A`, `Ctrl+C`, `Ctrl+V`, `Alt+Up/Down`, `Alt+Shift+Up/Down`, `F12`, `F2`) alongside standard Vim navigation (`Home`, `End`, `PageUp`, `PageDown`, `Delete`).
+- **Complete Git Signs & LazyGit Integration**: Gutter indicators (`│`, `_`, `~`), real-time inline line blame, hunk navigation (`]h`, `[h`), diff splits (`<leader>gd`), and LazyGit (`<leader>gg`).
+- **Ruby & Rails Development Environment**: Pre-configured `ruby_lsp`, `vim-rails` shortcuts (`rf`, `rc`, `rs`, `rt`, `rm`, `rr`), RuboCop formatting via `conform.nvim` (`<leader>cf`), `nvim-dap-ruby` debugging (`<leader>db`, `<leader>dc`), and RSpec/Minitest testing via `neotest`.
+- **Integrated Floating & Bottom Terminal (`<leader>ft` / `<leader>tt`)**: Powered by `snacks.nvim` using your native shell (`bash`/`zsh`/`fish`).
+- **Flat Technical UI**: Single-line borders (`border = "single"`), zero emojis, margin/padding (`scrolloff = 5`, `sidescrolloff = 8`, `pumheight = 10`), and font fallbacks (`JetBrainsMono Nerd Font:h13`).
+
+---
+
+## 📦 Installation & Setup
+
+### Recommended Local Installer
+
+To update or install RVM on your computer:
 
 ```bash
-nvim
+./install.sh
 ```
 
-On first launch, `lazy.nvim` will automatically download and set up all plugins in the background.
+The script automatically:
+1. Installs the main `rvm` launcher to `~/.local/bin/rvm`.
+2. Compiles the native Rust TUI binary to `~/.local/bin/rvm-native`.
+3. Creates default configuration at `~/.config/rvm/init.lua`.
 
 ---
 
-## Terminal Font Configuration
+## 🛠️ User API & Commands
 
-RVM requires a Nerd Font for icon rendering. Set your terminal font to `JetBrainsMono Nerd Font` (or another Nerd Font):
-
-- **Kitty**: Add `font_family JetBrainsMono Nerd Font` to `~/.config/kitty/kitty.conf`
-- **WezTerm**: Set `config.font = wezterm.font('JetBrainsMono Nerd Font')` in `~/.wezterm.lua`
-- **Alacritty**: Set `font.normal.family = "JetBrainsMono Nerd Font"` in `~/.config/alacritty/alacritty.toml`
-- **Ghostty**: Set `font-family = "JetBrainsMono Nerd Font"` in `~/.config/ghostty/config`
-- **GNOME Terminal**: Profile Preferences -> Text -> Custom font -> `JetBrains Mono Nerd Font`
-- **iTerm2**: Preferences -> Profiles -> Text -> Font -> `JetBrainsMono Nerd Font`
-
----
-
-## Khmer Mode
-
-RVM includes first-class Khmer localization:
-
-- Switch to Khmer interface: `:RVMKhmer` or press `<leader>K`
-- Switch back to English interface: `:RVMEnglish`
-
-Translated elements include statusline modes (`ធម្មតា`, `បញ្ចូល`, `មើលឃើញ`), file operations (`រក្សាទុក`, `បើក`, `ស្វែងរក`), diagnostics, and commands.
-
----
-
-## RVM Commands
-
-| Command | Action |
-|---------|--------|
-| `:RVM` | Displays RVM welcome banner, version, and features summary |
-| `:RVMVersion` | Prints detailed Neovim and RVM component versions |
-| `:RVMHealth` | Runs full environment diagnostic check |
-| `:RVMUpdate` | Safely updates plugins via `lazy.nvim` & git status |
+| Command / API | Action |
+|---------------|--------|
+| `:RVM` | Opens RVM Command Center |
+| `:RVMVersion` | Displays RVM version, Neovim engine, binary paths, and LuaJIT info |
+| `:RVMUpdate` | Pulls Git updates and updates all Lazy plugins |
+| `:RVMGitStatus` | Opens LazyGit terminal workflow (`<leader>gg`) |
+| `:RVMHealth` | Runs complete environment diagnostic check |
 | `:RVMKhmer` | Switches interface language to Khmer (`km`) |
 | `:RVMEnglish` | Switches interface language to English (`en`) |
+| `require("rvm").version()` | Lua API returning RVM system status table |
+| `require("rvm").update()` | Lua API triggering git pull and plugin update |
 
 ---
 
-## Keymaps
+## ⌨️ Keybindings Reference
 
-### LazyVim Leader Shortcuts (`<Space>`)
+### VS Code & Navigation Shortcuts
 
-| Keymap | Action |
-|--------|--------|
-| `<space>ff` | Find Files (Telescope) |
-| `<space>fg` | Live Grep |
-| `<space>fb` | Buffers List |
-| `<space>fr` | Recent Files |
-| `<space>e` | Toggle Neo-tree Explorer |
-| `<space>gg` | LazyGit Interface |
-| `<space>ft` | Toggle Floating Terminal |
-| `<space>tt` | Toggle Bottom Terminal |
-| `<space>lf` | Format Buffer (LSP / Conform) |
-| `<space>xx` | Diagnostics Panel (Trouble) |
-| `<space>K` | Toggle Khmer / English Language |
-
-### VS Code Shortcuts (CLI Terminal)
-
-| VS Code Shortcut | RVM Action |
-|------------------|------------|
-| `Ctrl+P` | Find Files |
-| `Ctrl+B` | Toggle File Explorer |
-| `Ctrl+Shift+F` | Search in Workspace |
-| `Ctrl+T` / `Ctrl+\`` | Toggle Terminal |
-| `Ctrl+W` | Close Buffer |
+| Keybinding | Action |
+|------------|--------|
+| `Ctrl+P` / `Ctrl+O` | Quick Open File (Telescope) |
+| `Ctrl+B` | Toggle File Explorer (Neo-tree) |
+| `Ctrl+Shift+F` | Search Workspace (Live Grep) |
 | `Ctrl+S` | Save File |
-| `Ctrl+Z` / `Ctrl+Y` | Undo / Redo |
+| `Ctrl+W` | Close Buffer |
+| `Ctrl+Z` | Undo |
+| `Ctrl+Y` | Redo |
+| `Ctrl+A` | Select All |
+| `Ctrl+C` / `Ctrl+V` | Copy / Paste Clipboard |
+| `Home` / `End` | Jump to Start / End of Line |
+| `PageUp` / `PageDown` | Scroll Page Up / Down |
+| `Delete` | Delete Character Forward |
+| `F12` | Go to Definition |
+| `F2` | Rename Symbol |
+| `Alt+Up` / `Alt+Down` | Move Line Up / Down |
+| `Alt+Shift+Up` / `Alt+Shift+Down` | Duplicate Line Up / Down |
+
+### Git Keybindings
+
+| Keybinding | Action |
+|------------|--------|
+| `<leader>gg` | Open LazyGit Interface |
+| `<leader>gG` | Open LazyGit for Current File |
+| `<leader>gbt` | Toggle Line Blame |
+| `<leader>gbl` | Full Line Blame |
+| `<leader>ghp` | Preview Hunk |
+| `<leader>ghs` | Stage Hunk |
+| `<leader>ghr` | Reset Hunk |
+| `<leader>gd` | Git Diff Split |
+| `]h` / `[h` | Jump to Next / Previous Git Hunk |
 
 ---
 
-## Plugins
+## 📄 License
 
-RVM includes modern Neovim plugins managed via `lazy.nvim`:
-- **LazyVim / LazyVim**: Base distribution framework
-- **folke/tokyonight.nvim**: Primary dark theme
-- **nvim-telescope/telescope.nvim**: Fuzzy finder
-- **nvim-neo-tree/neo-tree.nvim**: Workspace file tree
-- **folke/which-key.nvim**: Interactive leader menu popup
-- **nvim-lualine/lualine.nvim**: Global statusline with Khmer mode indicator
-- **akinsho/bufferline.nvim**: Buffer tabs line
-- **nvim-treesitter/nvim-treesitter**: Syntax parser & highlighter
-- **hrsh7th/nvim-cmp**: Autocompletion engine
-- **neovim/nvim-lspconfig**: LSP server manager
-- **stevearc/conform.nvim**: Formatter
-- **kdheepak/lazygit.nvim**: LazyGit integration
-- **folke/snacks.nvim**: Terminal integration
-
----
-
-## LSP & Language Support
-
-Pre-configured language servers and tools:
-- **Lua**: `lua-language-server`, `stylua`
-- **Python**: `pyright`, `black`, `isort`
-- **JavaScript / TypeScript**: `ts_ls`, `prettier`
-- **Rust**: `rust-analyzer`, `rustfmt`
-- **Go**: `gopls`, `gofmt`
-- **C / C++**: `clangd`
-- **Bash**: `bashls`
-
----
-
-## Git Integration
-
-- Buffer gutter diff signs via `gitsigns.nvim`
-- Hunk navigation: `]h` (Next hunk), `[h` (Prev hunk)
-- Line blame: `<leader>ghb`
-- Full LazyGit terminal interface: `<leader>gg`
-
----
-
-## Terminal
-
-- Floating Terminal: `<leader>ft`
-- Bottom Terminal Panel: `<leader>tt`
-- Uses your environment's `$SHELL` (`zsh`, `bash`, or `fish`).
-
----
-
-## Troubleshooting
-
-If you encounter startup issues:
-1. Run `:RVMHealth` to check environment diagnostic status.
-2. Run `:Lazy` to inspect plugin installation state.
-3. Check Neovim version with `nvim --version` (must be >= `v0.9.0`).
-
----
-
-## Contributing
-
-Contributions to RVM and Khmer localization are welcome! Please open issues or pull requests on [GitHub](https://github.com/Ratanazen/rvm.git).
-
----
-
-## License
-
-RVM is licensed under the MIT License.
+RVM (Ratana Vim) is licensed under the MIT License.

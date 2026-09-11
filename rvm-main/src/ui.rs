@@ -27,7 +27,7 @@ pub struct UI<'a> {
 impl<'a> UI<'a> {
     pub fn render(&self, f: &mut Frame, buffer: &Buffer, explorer: &FileExplorer) {
         let colors = &self.theme.colors;
-        let native = self.theme.terminal_native;
+        let _native = self.theme.terminal_native;
 
         let area = f.area();
         let main_chunks = Layout::default()

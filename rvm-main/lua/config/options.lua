@@ -32,7 +32,8 @@ vim.g.terminal_color_14 = "#7dcfff" -- Bright Cyan
 vim.g.terminal_color_15 = "#c0caf5" -- Bright White
 
 -- UI & Editor Options
-vim.o.guifont = "JetBrainsMono Nerd Font:h13"
+vim.opt.guifont = "JetBrainsMono Nerd Font:h13,JetBrainsMono NF:h13,Hack Nerd Font:h13,FiraCode Nerd Font:h13,monospace:h13"
+vim.opt.linespace = 2
 opt.autowrite = true
 opt.clipboard = "unnamedplus"
 opt.cmdheight = 1

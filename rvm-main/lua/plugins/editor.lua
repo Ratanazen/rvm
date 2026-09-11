@@ -1,5 +1,5 @@
 -- lua/plugins/editor.lua
--- RVM Minimal Explorer, Finder, and Keymaps
+-- RVM Minimal Explorer, Finder, Mouse Click Open & Single Line Borders
 
 return {
   -- Clean Telescope Finder
@@ -21,22 +21,26 @@ return {
     },
   },
 
-  -- Clean Neo-tree Explorer
+  -- Clean Neo-tree Explorer (Mouse Left-Click Open File)
   {
     "nvim-neo-tree/neo-tree.nvim",
     cmd = "Neotree",
     keys = {
       { "<leader>e", "<cmd>Neotree toggle<cr>", desc = "Toggle Explorer" },
+      { "<C-b>", "<cmd>Neotree toggle<cr>", desc = "Toggle Explorer (Ctrl+B)" },
     },
     opts = {
       filesystem = {
         bind_to_cwd = false,
         follow_current_file = { enabled = true },
+        use_libuv_file_watcher = true,
       },
       window = {
-        width = 25,
+        width = 28,
+        popup = { border = "single" },
         mappings = {
           ["<space>"] = "none",
+          ["<leftclick>"] = "open",
         },
       },
     },

@@ -4,26 +4,29 @@
 
 ---
 
-## 🚀 Local Run Guide (Quickstart)
+## 🚀 Tri-Engine Architecture & Run Guide
 
-After running `./install.sh`, `rvm` is available globally on your computer at `~/.local/bin/rvm`.
+RVM uses a unified `rvm` launcher offering three distinct editing engines.
 
 ### Common Commands:
 
 ```bash
-# 1. Open current directory as a project in RVM
+# 1. Open current directory as a project (Default: Neovim Engine)
 rvm .
 
-# 2. Open a specific file
+# 2. Open a specific file with the default engine
 rvm main.rb
 
-# 3. Check installed RVM and Neovim engine versions
+# 3. Use the Rust Native Engine (Custom TUI)
+rvm --native main.rb
+
+# 4. Use the Nano Engine (Simple, fast C-based editor)
+rvm --nano main.rb
+
+# 5. Check installed RVM and available engines
 rvm --version
 
-# 4. Run standalone Rust TUI fallback editor
-rvm --native
-
-# 5. Re-run local installation & build updates
+# 6. Re-run local installation & build updates
 ./install.sh
 ```
 

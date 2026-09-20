@@ -1,15 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
-# RVM 2.0 installer — installs both the Lua editor (default) and the
-# Rust native binary (when cargo is available).
-#
-# Per spec requirement #19: keep existing installation scripts working.
-# We make the script path-portable (no hardcoded /home/reny/RVM path).
+# RVM 2.6 installer — installs the Tri-Engine architecture
+# (Neovim, Rust Native, and Nano).
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-echo ":: Installing RVM 2.6 — Native Terminal Code Editor (Vim + LazyVim UX)..."
+echo ":: Installing RVM 2.6 — Tri-Engine Terminal Code Editor..."
 
 # 1. Create target directories
 mkdir -p "$HOME/.local/bin"
@@ -24,10 +21,40 @@ if [ "$1" = "--build-neovim" ]; then
 fi
 
 # 3. Fix the launcher to point to the install location
-cat > "$HOME/.local/bin/rvm" <<EOF
+cat > "$HOME/.local/bin/rvm" <<INNER_EOF
 #!/usr/bin/env bash
-# RVM (Ratana Vim) — Powered by Neovim Core Engine (github.com/neovim/neovim)
+# RVM (Ratana Vim) — Tri-Engine Code Editor
 RVM_ROOT="$SCRIPT_DIR"
+
+if [ "\$1" = "--version" ] || [ "\$1" = "-v" ]; then
+    echo "RVM (Ratana Vim) 2.6 - Tri-Engine Editor"
+    echo "Engines available:"
+    if [ -x "\$HOME/.local/bin/rvm-engine" ]; then
+        echo "  - Neovim Engine: Installed (rvm-engine)"
+    elif command -v nvim >/dev/null 2>&1; then
+        echo "  - Neovim Engine: Installed (system nvim)"
+    else
+        echo "  - Neovim Engine: Not installed"
+    fi
+    if [ -x "\$HOME/.local/bin/rvm-native" ]; then
+        echo "  - Rust Native Engine: Installed"
+    else
+        echo "  - Rust Native Engine: Not installed"
+    fi
+    if [ -x "\$HOME/.local/bin/rvm-nano" ]; then
+        echo "  - Nano Engine: Installed"
+    else
+        echo "  - Nano Engine: Not installed"
+    fi
+    exit 0
+fi
+
+if [ "\$1" = "--nano" ]; then
+    shift
+    if [ -x "\$HOME/.local/bin/rvm-nano" ]; then
+        exec "\$HOME/.local/bin/rvm-nano" "\$@"
+    fi
+fi
 
 if [ "\$1" = "--native" ]; then
     shift
@@ -42,11 +69,13 @@ elif command -v nvim >/dev/null 2>&1; then
     exec nvim -u "\$RVM_ROOT/init.lua" "\$@"
 elif [ -x "\$HOME/.local/bin/rvm-native" ]; then
     exec "\$HOME/.local/bin/rvm-native" "\$@"
+elif [ -x "\$HOME/.local/bin/rvm-nano" ]; then
+    exec "\$HOME/.local/bin/rvm-nano" "\$@"
 else
-    echo "Error: Neovim (nvim) is not installed."
+    echo "Error: No RVM engines are available on this system."
     exit 1
 fi
-EOF
+INNER_EOF
 chmod +x "$HOME/.local/bin/rvm"
 ln -sf "$HOME/.local/bin/rvm" "$HOME/.local/bin/rvim"
 
@@ -68,12 +97,37 @@ if command -v cargo >/dev/null 2>&1; then
         echo "  [WARN] cargo build failed; continuing with Lua-only installation"
     fi
 else
-    echo "  [INFO] cargo not found; skipping native Rust binary (Lua implementation is sufficient)"
+    echo "  [INFO] cargo not found; skipping native Rust binary"
 fi
 
-# 6. Create a default user config if missing
+# 6. Build the Nano engine (rvn)
+echo ":: Building Nano engine (rvn)..."
+if [ -d "$SCRIPT_DIR/rvn" ]; then
+    cd "$SCRIPT_DIR/rvn"
+    if [ ! -f "Makefile" ]; then
+        ./autogen.sh >/dev/null 2>&1 || true
+        ./configure >/dev/null 2>&1 || true
+    fi
+    if make >/dev/null 2>&1; then
+        if [ -f "src/rvn" ]; then
+            cp src/rvn "$HOME/.local/bin/rvm-nano"
+            echo "  Nano engine installed to $HOME/.local/bin/rvm-nano"
+        elif [ -f "src/nano" ]; then
+            cp src/nano "$HOME/.local/bin/rvm-nano"
+            echo "  Nano engine installed to $HOME/.local/bin/rvm-nano"
+        else
+            echo "  [WARN] Nano engine binary not found after build."
+        fi
+    else
+        echo "  [WARN] make failed for Nano engine."
+    fi
+else
+    echo "  [WARN] rvn directory not found, skipping Nano engine."
+fi
+
+# 7. Create a default user config if missing
 if [ ! -f "$HOME/.config/rvm/init.lua" ]; then
-    cat > "$HOME/.config/rvm/init.lua" <<'EOF'
+    cat > "$HOME/.config/rvm/init.lua" <<'CONFIG_EOF'
 -- RVM user configuration — see README.md for full options
 -- Defaults: theme = "RVM Terminal" (terminal-native), style = "RVM LazyVim"
 
@@ -87,7 +141,7 @@ vim.g.rvm_lsp = true
 vim.g.rvm_git = true
 vim.g.rvm_format_on_save = true
 vim.g.rvm_icons = true
-EOF
+CONFIG_EOF
     echo "  Default config written to ~/.config/rvm/init.lua"
 fi
 
@@ -97,17 +151,11 @@ echo "   Executable path: $HOME/.local/bin/rvm"
 echo ""
 echo "Try running:"
 echo "   rvm --version"
-echo "   rvm .                # Open current directory as project"
-echo "   rvm main.dart         # Open a specific file"
-echo "   rvm --help            # View help"
+echo "   rvm .                # Open current directory (Neovim Engine)"
+echo "   rvm --native .       # Open with Rust Native Engine"
+echo "   rvm --nano file.txt  # Open with Nano Engine"
 echo ""
-echo "Default keybindings:"
+echo "Default Neovim keybindings:"
 echo "   <Space>               Leader key — opens Which-Key popup"
 echo "   <leader>ff            Find Files (Telescope-like)"
 echo "   <leader>fg            Live Grep"
-echo "   <leader>tt            Toggle Terminal"
-echo "   <leader>gg            Git Status"
-echo "   :w / :q               Save / Quit"
-echo ""
-echo "Default theme: RVM Terminal (terminal-native — uses your terminal emulator's colors)"
-echo "Default style: RVM LazyVim (compact, keyboard-first)"

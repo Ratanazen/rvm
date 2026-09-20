@@ -1,7 +1,42 @@
 #!/usr/bin/env bash
-# RVM (Ratana Vim) — Powered by Neovim Core Engine (github.com/neovim/neovim)
-# Combines Neovim runtime, LazyVim architecture, Tree-sitter, LSP, and Khmer UI.
+# RVM (Ratana Vim) — Tri-Engine Code Editor
+# Powered by Neovim, Rust, and Nano.
+
 RVM_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+if [ "$1" = "--version" ] || [ "$1" = "-v" ]; then
+    echo "RVM (Ratana Vim) 2.6 - Tri-Engine Editor"
+    echo "Engines available:"
+    if [ -x "$HOME/.local/bin/rvm-engine" ]; then
+        echo "  - Neovim Engine: Installed (rvm-engine)"
+    elif command -v nvim >/dev/null 2>&1; then
+        echo "  - Neovim Engine: Installed (system nvim)"
+    else
+        echo "  - Neovim Engine: Not installed"
+    fi
+    if [ -x "$HOME/.local/bin/rvm-native" ]; then
+        echo "  - Rust Native Engine: Installed"
+    else
+        echo "  - Rust Native Engine: Not installed"
+    fi
+    if [ -x "$HOME/.local/bin/rvm-nano" ]; then
+        echo "  - Nano Engine: Installed"
+    else
+        echo "  - Nano Engine: Not installed"
+    fi
+    exit 0
+fi
+
+# Check if user explicitly requested Nano fallback
+if [ "$1" = "--nano" ]; then
+    shift
+    if [ -x "$HOME/.local/bin/rvm-nano" ]; then
+        exec "$HOME/.local/bin/rvm-nano" "$@"
+    else
+        echo "Error: rvm-nano binary not found."
+        exit 1
+    fi
+fi
 
 # Check if user explicitly requested Rust native TUI fallback
 if [ "$1" = "--native" ]; then
@@ -14,14 +49,16 @@ if [ "$1" = "--native" ]; then
     fi
 fi
 
-# Primary engine: Source-built rvm-engine or System Neovim (github.com/neovim/neovim)
+# Primary engine: Source-built rvm-engine or System Neovim
 if [ -x "$HOME/.local/bin/rvm-engine" ]; then
     exec "$HOME/.local/bin/rvm-engine" -u "$RVM_ROOT/init.lua" "$@"
 elif command -v nvim >/dev/null 2>&1; then
     exec nvim -u "$RVM_ROOT/init.lua" "$@"
 elif [ -x "$HOME/.local/bin/rvm-native" ]; then
     exec "$HOME/.local/bin/rvm-native" "$@"
+elif [ -x "$HOME/.local/bin/rvm-nano" ]; then
+    exec "$HOME/.local/bin/rvm-nano" "$@"
 else
-    echo "Error: Neovim (nvim) is not installed on this system."
+    echo "Error: No RVM engines are available on this system."
     exit 1
 fi

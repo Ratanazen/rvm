@@ -21,7 +21,7 @@ function M.version()
   local nvim_ver = vim.version()
   local nvim_str = string.format("%d.%d.%d", nvim_ver.major, nvim_ver.minor, nvim_ver.patch)
   return {
-    version = config.options.version or "2.6.0",
+    version = config.options.version or "3.0.0",
     engine = "Neovim v" .. nvim_str .. " (github.com/neovim/neovim)",
     binary = vim.fn.expand("$HOME/.local/bin/rvm"),
     native_binary = vim.fn.expand("$HOME/.local/bin/rvm-native"),

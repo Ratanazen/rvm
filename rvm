@@ -5,7 +5,7 @@
 RVM_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 if [ "$1" = "--version" ] || [ "$1" = "-v" ]; then
-    echo "RVM (Ratana Vim) 2.6 - Tri-Engine Editor"
+    echo "RVM (Ratana Vim) 3.0 - Tri-Engine Editor"
     echo "Engines available:"
     if [ -x "$HOME/.local/bin/rvm-engine" ]; then
         echo "  - Neovim Engine: Installed (rvm-engine)"

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
-# RVM 2.6 installer — installs the Tri-Engine architecture
+# RVM 3.0 installer — installs the Tri-Engine architecture
 # (Neovim, Rust Native, and Nano).
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-echo ":: Installing RVM 2.6 — Tri-Engine Terminal Code Editor..."
+echo ":: Installing RVM 3.0 — Tri-Engine Terminal Code Editor..."
 
 # 1. Create target directories
 mkdir -p "$HOME/.local/bin"
@@ -27,7 +27,7 @@ cat > "$HOME/.local/bin/rvm" <<INNER_EOF
 RVM_ROOT="$SCRIPT_DIR"
 
 if [ "\$1" = "--version" ] || [ "\$1" = "-v" ]; then
-    echo "RVM (Ratana Vim) 2.6 - Tri-Engine Editor"
+    echo "RVM (Ratana Vim) 3.0 - Tri-Engine Editor"
     echo "Engines available:"
     if [ -x "\$HOME/.local/bin/rvm-engine" ]; then
         echo "  - Neovim Engine: Installed (rvm-engine)"
@@ -146,7 +146,7 @@ CONFIG_EOF
 fi
 
 echo ""
-echo "[OK] RVM 2.6 has been installed successfully!"
+echo "[OK] RVM 3.0 has been installed successfully!"
 echo "   Executable path: $HOME/.local/bin/rvm"
 echo ""
 echo "Try running:"

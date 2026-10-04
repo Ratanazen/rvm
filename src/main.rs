@@ -18,7 +18,7 @@ use std::path::PathBuf;
 #[derive(Parser, Debug)]
 #[command(
     name = "rvm",
-    version = "3.0.0",
+    version = "3.1.0",
     about = "RVM — Native terminal code editor (Vim + LazyVim UX)"
     )]
 struct Args {

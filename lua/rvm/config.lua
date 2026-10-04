@@ -4,7 +4,7 @@
 local M = {}
 
 M.defaults = {
-  version = "3.0.0",
+  version = "3.1.0",
   mode = "full", -- "full" or "lite"
   theme = "rvm-dark", -- "rvm-dark" or "rvm-light"
   lang = "en",
